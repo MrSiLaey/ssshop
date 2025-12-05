@@ -1,0 +1,259 @@
+@import "tailwindcss";
+
+@theme {
+  /* Black-Gold-White Luxury Theme */
+  --color-border: hsl(45 20% 20%);
+  --color-input: hsl(0 0% 10%);
+  --color-ring: hsl(45 90% 55%);
+  --color-background: hsl(0 0% 4%);
+  --color-foreground: hsl(0 0% 98%);
+  --color-primary: hsl(45 90% 55%);
+  --color-primary-foreground: hsl(0 0% 5%);
+  --color-secondary: hsl(0 0% 12%);
+  --color-secondary-foreground: hsl(0 0% 98%);
+  --color-muted: hsl(0 0% 15%);
+  --color-muted-foreground: hsl(0 0% 65%);
+  --color-accent: hsl(45 80% 50%);
+  --color-accent-foreground: hsl(0 0% 5%);
+  --color-destructive: hsl(0 70% 50%);
+  --color-destructive-foreground: hsl(0 0% 98%);
+  --color-card: hsl(0 0% 6%);
+  --color-card-foreground: hsl(0 0% 98%);
+  --color-popover: hsl(0 0% 8%);
+  --color-popover-foreground: hsl(0 0% 98%);
+  --color-warning: hsl(45 100% 50%);
+  --color-success: hsl(120 60% 45%);
+  --color-gold: hsl(45 90% 55%);
+  --color-gold-light: hsl(45 90% 70%);
+  --color-gold-dark: hsl(45 80% 40%);
+  --radius: 0.75rem;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Custom Scrollbar - Gold Theme */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: hsl(0 0% 5%);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, hsl(45 90% 55%), hsl(45 80% 40%));
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, hsl(45 90% 65%), hsl(45 80% 50%));
+  }
+}
+
+@layer utilities {
+  /* Text Gradient - Gold Theme */
+  .text-gradient {
+    background: linear-gradient(to right, #fcd34d, #f59e0b, #d97706);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-gold {
+    background: linear-gradient(to right, #fef3c7, #fcd34d, #f59e0b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-luxury {
+    background: linear-gradient(135deg, #ffffff, #fcd34d, #d97706, #fcd34d, #ffffff);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s linear infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+
+  /* Glow Effects - Gold Theme */
+  .glow {
+    box-shadow: 0 0 20px rgba(252, 211, 77, 0.3),
+                0 0 40px rgba(245, 158, 11, 0.2),
+                0 0 60px rgba(217, 119, 6, 0.1);
+  }
+
+  .glow-gold {
+    box-shadow: 0 0 15px rgba(252, 211, 77, 0.4),
+                0 0 30px rgba(252, 211, 77, 0.2);
+  }
+
+  .glow-text {
+    text-shadow: 0 0 20px rgba(252, 211, 77, 0.5),
+                 0 0 40px rgba(245, 158, 11, 0.3);
+  }
+
+  /* Glass Effect - Black Gold Theme */
+  .glass {
+    background-color: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(252, 211, 77, 0.15);
+  }
+
+  /* Neon Border - Gold Theme */
+  .neon-border {
+    border: 1px solid rgba(252, 211, 77, 0.5);
+    box-shadow: 0 0 5px rgba(252, 211, 77, 0.3),
+                inset 0 0 5px rgba(252, 211, 77, 0.1);
+  }
+
+  /* Gold Border Animation */
+  .gold-border {
+    background: linear-gradient(90deg, #fef3c7, #fcd34d, #f59e0b, #fcd34d, #fef3c7);
+    background-size: 200% 100%;
+    animation: gold-flow 3s linear infinite;
+  }
+
+  @keyframes gold-flow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+
+  /* Circuit Pattern */
+  .circuit-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23fcd34d' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* Animation Classes */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  /* Gradient Border - Gold Theme */
+  .gradient-border {
+    position: relative;
+    background: linear-gradient(var(--color-background), var(--color-background)) padding-box,
+                linear-gradient(135deg, #fcd34d, #f59e0b, #d97706) border-box;
+    border: 2px solid transparent;
+  }
+
+  /* Card Hover Effect - Gold Theme */
+  .card-hover {
+    transition: all 0.3s ease;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -15px rgba(252, 211, 77, 0.25);
+  }
+
+  /* Gold line decoration */
+  .gold-line {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #fcd34d, transparent);
+  }
+
+  /* Luxury card */
+  .luxury-card {
+    background: linear-gradient(145deg, rgba(20,20,20,0.9), rgba(10,10,10,0.95));
+    border: 1px solid rgba(252, 211, 77, 0.2);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 5px rgba(252, 211, 77, 0.2),
+                0 0 10px rgba(252, 211, 77, 0.2),
+                0 0 15px rgba(252, 211, 77, 0.2);
+  }
+  to {
+    box-shadow: 0 0 10px rgba(252, 211, 77, 0.4),
+                0 0 20px rgba(245, 158, 11, 0.3),
+                0 0 30px rgba(217, 119, 6, 0.2);
+  }
+}
+
+/* Custom Selection - Gold Theme */
+::selection {
+  background-color: rgba(252, 211, 77, 0.3);
+  color: white;
+}
+
+/* Focus Ring - Gold Theme */
+.focus-ring:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(0 0% 4%), 0 0 0 4px hsl(45 90% 55%);
+}
+
+/* Hero Section Background */
+.hero-pattern {
+  background-image: 
+    radial-gradient(circle at 20% 20%, rgba(252, 211, 77, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(217, 119, 6, 0.04) 0%, transparent 70%);
+}
+
+/* Product Card Shine Effect */
+.shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(252, 211, 77, 0.08),
+    transparent
+  );
+  transform: rotate(45deg);
+  animation: shine 4s infinite;
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
+}
