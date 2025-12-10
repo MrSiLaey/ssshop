@@ -199,6 +199,24 @@ function LoginForm() {
               สมัครสมาชิก
             </Link>
           </p>
+
+          {/* Demo Credentials */}
+          <div className="mt-6 p-4 rounded-xl bg-primary/10 border border-primary/20">
+            <div className="flex items-center gap-2 mb-3">
+              <Crown className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-foreground">บัญชีทดสอบ (Demo)</span>
+            </div>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Admin:</span>
+                <code className="px-2 py-1 bg-background/50 rounded text-foreground text-xs">admin@ssshop.com</code>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">รหัสผ่าน:</span>
+                <code className="px-2 py-1 bg-background/50 rounded text-foreground text-xs">password123</code>
+              </div>
+            </div>
+          </div>
         </Card>
 
         {/* Back to Home */}
