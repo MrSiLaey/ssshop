@@ -130,11 +130,14 @@ export async function POST(req: NextRequest) {
         })
 
         // Update license
+        const currentMachineIds = (license.machineIds as unknown as string[]) || []
+        const newMachineIds = [...currentMachineIds, machineId]
+
         await tx.licenseKey.update({
           where: { id: license.id },
           data: {
             activationsCount: { increment: 1 },
-            machineIds: { push: machineId },
+            machineIds: newMachineIds,
             lastActivatedAt: new Date(),
           },
         })
@@ -234,7 +237,8 @@ export async function DELETE(req: NextRequest) {
       })
 
       // Update license
-      const updatedMachineIds = license.machineIds.filter(
+      const currentMachineIds = (license.machineIds as unknown as string[]) || []
+      const updatedMachineIds = currentMachineIds.filter(
         (id: string) => id !== machineId
       )
 

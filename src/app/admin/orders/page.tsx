@@ -123,7 +123,7 @@ export default function AdminOrdersPage() {
       {/* Page Header */}
       <div>
         <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500 text-transparent bg-clip-text mb-2">คำสั่งซื้อ</h1>
-        <p className="text-slate-400">จัดการคำสั่งซื้อทั้งหมด</p>
+        <p className="text-muted-foreground">จัดการคำสั่งซื้อทั้งหมด</p>
       </div>
 
       {/* Stats */}
@@ -137,18 +137,18 @@ export default function AdminOrdersPage() {
                   config.variant === 'success' ? 'bg-gradient-to-br from-emerald-500/20 to-emerald-600/20' :
                   config.variant === 'warning' ? 'bg-gradient-to-br from-amber-500/20 to-yellow-500/20' :
                   config.variant === 'info' ? 'bg-gradient-to-br from-blue-500/20 to-blue-600/20' :
-                  'bg-slate-800'
+                  'bg-muted'
                 }`}>
                   <config.icon className={`w-6 h-6 ${
-                    config.variant === 'success' ? 'text-emerald-400' :
-                    config.variant === 'warning' ? 'text-amber-400' :
-                    config.variant === 'info' ? 'text-blue-400' :
-                    'text-slate-400'
+                    config.variant === 'success' ? 'text-emerald-500' :
+                    config.variant === 'warning' ? 'text-amber-500' :
+                    config.variant === 'info' ? 'text-blue-500' :
+                    'text-muted-foreground'
                   }`} />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-white">{count}</p>
-                  <p className="text-sm text-slate-400">{config.label}</p>
+                  <p className="text-2xl font-bold text-foreground">{count}</p>
+                  <p className="text-sm text-muted-foreground">{config.label}</p>
                 </div>
               </div>
             </Card>
@@ -188,13 +188,13 @@ export default function AdminOrdersPage() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="text-left text-sm text-slate-400 bg-slate-800/50">
+              <tr className="text-left text-sm text-muted-foreground bg-muted/50">
                 <th className="p-4">
                   <input
                     type="checkbox"
                     checked={selectedOrders.length === filteredOrders.length && filteredOrders.length > 0}
                     onChange={toggleSelectAll}
-                    className="w-4 h-4 rounded border-slate-600 bg-slate-800 text-amber-500 focus:ring-amber-500"
+                    className="w-4 h-4 rounded border-border bg-background text-amber-500 focus:ring-amber-500"
                   />
                 </th>
                 <th className="p-4 font-medium">หมายเลข</th>
@@ -212,26 +212,26 @@ export default function AdminOrdersPage() {
                 const status = statusConfig[order.status as keyof typeof statusConfig]
                 const payment = paymentConfig[order.paymentStatus as keyof typeof paymentConfig]
                 return (
-                  <tr key={order.id} className="border-t border-slate-800/50 hover:bg-slate-800/30 transition-colors">
+                  <tr key={order.id} className="border-t border-border/50 hover:bg-muted/30 transition-colors">
                     <td className="p-4">
                       <input
                         type="checkbox"
                         checked={selectedOrders.includes(order.id)}
                         onChange={() => toggleSelect(order.id)}
-                        className="w-4 h-4 rounded border-slate-600 bg-slate-800 text-amber-500 focus:ring-amber-500"
+                        className="w-4 h-4 rounded border-border bg-background text-amber-500 focus:ring-amber-500"
                       />
                     </td>
                     <td className="p-4">
-                      <span className="font-mono font-medium text-amber-400">{order.id}</span>
+                      <span className="font-mono font-medium text-amber-500">{order.id}</span>
                     </td>
                     <td className="p-4">
                       <div>
-                        <p className="text-white font-medium">{order.customer.name}</p>
-                        <p className="text-sm text-slate-500">{order.customer.email}</p>
+                        <p className="text-foreground font-medium">{order.customer.name}</p>
+                        <p className="text-sm text-muted-foreground">{order.customer.email}</p>
                       </div>
                     </td>
                     <td className="p-4">
-                      <span className="font-semibold text-white">{formatCurrency(order.total)}</span>
+                      <span className="font-semibold text-foreground">{formatCurrency(order.total)}</span>
                     </td>
                     <td className="p-4">
                       <Badge variant={status.variant}>
@@ -245,19 +245,19 @@ export default function AdminOrdersPage() {
                     <td className="p-4">
                       <div className="flex items-center gap-1">
                         {order.hasDigital && (
-                          <span title="สินค้าดิจิทัล"><Download className="w-4 h-4 text-amber-400" /></span>
+                          <span title="สินค้าดิจิทัล"><Download className="w-4 h-4 text-amber-500" /></span>
                         )}
                         {!order.hasDigital && (
-                          <span title="สินค้าจัดส่ง"><Package className="w-4 h-4 text-slate-400" /></span>
+                          <span title="สินค้าจัดส่ง"><Package className="w-4 h-4 text-muted-foreground" /></span>
                         )}
-                        <span className="text-slate-500 text-sm">×{order.items}</span>
+                        <span className="text-muted-foreground text-sm">×{order.items}</span>
                       </div>
                     </td>
                     <td className="p-4">
-                      <span className="text-slate-400 text-sm">{order.date}</span>
+                      <span className="text-muted-foreground text-sm">{order.date}</span>
                     </td>
                     <td className="p-4">
-                      <Button variant="ghost" size="icon" className="text-amber-400 hover:text-amber-300 hover:bg-amber-500/10">
+                      <Button variant="ghost" size="icon" className="text-amber-500 hover:text-amber-400 hover:bg-amber-500/10">
                         <Eye className="w-4 h-4" />
                       </Button>
                     </td>
@@ -269,13 +269,13 @@ export default function AdminOrdersPage() {
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between p-4 border-t border-slate-800">
-          <p className="text-sm text-slate-400">
+        <div className="flex items-center justify-between p-4 border-t border-border">
+          <p className="text-sm text-muted-foreground">
             แสดง {filteredOrders.length} จาก {orders.length} รายการ
           </p>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" disabled className="border-slate-700">ก่อนหน้า</Button>
-            <Button variant="outline" size="sm" disabled className="border-slate-700">ถัดไป</Button>
+            <Button variant="outline" size="sm" disabled className="border-border">ก่อนหน้า</Button>
+            <Button variant="outline" size="sm" disabled className="border-border">ถัดไป</Button>
           </div>
         </div>
       </Card>

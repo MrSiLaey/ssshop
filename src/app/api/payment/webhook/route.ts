@@ -5,7 +5,7 @@ import { Prisma } from '@prisma/client'
 import { generateLicenseKey } from '@/lib/utils'
 import { headers } from 'next/headers'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_dummy')
 
 // POST /api/payment/webhook - Handle Stripe webhooks
 export async function POST(req: NextRequest) {

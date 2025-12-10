@@ -41,12 +41,12 @@ export default function AdminSettingsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500 text-transparent bg-clip-text mb-2">ตั้งค่า</h1>
-          <p className="text-slate-400">จัดการการตั้งค่าระบบร้านค้า</p>
+          <p className="text-muted-foreground">จัดการการตั้งค่าระบบร้านค้า</p>
         </div>
         <Button 
           onClick={handleSave}
           disabled={isSaving}
-          className="bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400"
+          className="bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-white"
         >
           {isSaving ? (
             <>
@@ -73,8 +73,8 @@ export default function AdminSettingsPage() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
                     activeTab === tab.id
-                      ? 'bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-amber-400 border border-amber-500/30'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                      ? 'bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-amber-500 border border-amber-500/30'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                   }`}
                 >
                   <tab.icon className="w-5 h-5" />
@@ -96,8 +96,8 @@ export default function AdminSettingsPage() {
                     <Store className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-semibold text-white">ข้อมูลร้านค้า</h2>
-                    <p className="text-sm text-slate-400">ตั้งค่าข้อมูลพื้นฐานของร้านค้า</p>
+                    <h2 className="text-xl font-semibold text-foreground">ข้อมูลร้านค้า</h2>
+                    <p className="text-sm text-muted-foreground">ตั้งค่าข้อมูลพื้นฐานของร้านค้า</p>
                   </div>
                 </div>
 
@@ -140,8 +140,8 @@ export default function AdminSettingsPage() {
                     <Globe className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-semibold text-white">SEO & โซเชียล</h2>
-                    <p className="text-sm text-slate-400">ตั้งค่าการแสดงผลบนเครื่องมือค้นหา</p>
+                    <h2 className="text-xl font-semibold text-foreground">SEO & โซเชียล</h2>
+                    <p className="text-sm text-muted-foreground">ตั้งค่าการแสดงผลบนเครื่องมือค้นหา</p>
                   </div>
                 </div>
 
@@ -153,7 +153,7 @@ export default function AdminSettingsPage() {
                   <div className="space-y-2">
                     <Label>Meta Description</Label>
                     <textarea 
-                      className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-500/50 focus:ring-2 focus:ring-amber-500/20 resize-none"
+                      className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-amber-500/50 focus:ring-2 focus:ring-amber-500/20 resize-none"
                       rows={3}
                       defaultValue="Soft Stop Shop ร้านขายซอฟต์แวร์ลิขสิทธิ์ ฮาร์ดแวร์คุณภาพ พร้อมบริการหลังการขาย"
                     />
@@ -172,8 +172,8 @@ export default function AdminSettingsPage() {
                     <CreditCard className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-semibold text-white">Stripe</h2>
-                    <p className="text-sm text-slate-400">การตั้งค่าการชำระเงินผ่าน Stripe</p>
+                    <h2 className="text-xl font-semibold text-foreground">Stripe</h2>
+                    <p className="text-sm text-muted-foreground">การตั้งค่าการชำระเงินผ่าน Stripe</p>
                   </div>
                   <Badge variant="success" className="ml-auto">เชื่อมต่อแล้ว</Badge>
                 </div>
@@ -200,8 +200,8 @@ export default function AdminSettingsPage() {
                     <CreditCard className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-semibold text-white">PromptPay</h2>
-                    <p className="text-sm text-slate-400">การตั้งค่าการชำระเงินผ่าน PromptPay</p>
+                    <h2 className="text-xl font-semibold text-foreground">PromptPay</h2>
+                    <p className="text-sm text-muted-foreground">การตั้งค่าการชำระเงินผ่าน PromptPay</p>
                   </div>
                   <Badge variant="success" className="ml-auto">เปิดใช้งาน</Badge>
                 </div>
@@ -241,14 +241,14 @@ export default function AdminSettingsPage() {
                   { title: 'ลูกค้าใหม่', desc: 'รับแจ้งเตือนเมื่อมีลูกค้าสมัครใหม่', enabled: false },
                   { title: 'รีวิวใหม่', desc: 'รับแจ้งเตือนเมื่อมีรีวิวสินค้าใหม่', enabled: false },
                 ].map((item, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 rounded-xl bg-slate-800/30 border border-slate-700/50">
+                  <div key={index} className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border">
                     <div>
-                      <p className="text-white font-medium">{item.title}</p>
-                      <p className="text-sm text-slate-400">{item.desc}</p>
+                      <p className="text-foreground font-medium">{item.title}</p>
+                      <p className="text-sm text-muted-foreground">{item.desc}</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" defaultChecked={item.enabled} className="sr-only peer" />
-                      <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-yellow-400 peer-checked:to-amber-500"></div>
+                      <div className="w-11 h-6 bg-muted peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-yellow-400 peer-checked:to-amber-500"></div>
                     </label>
                   </div>
                 ))}
@@ -265,18 +265,18 @@ export default function AdminSettingsPage() {
                     <Shield className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-semibold text-white">ความปลอดภัย</h2>
-                    <p className="text-sm text-slate-400">ตั้งค่าความปลอดภัยของระบบ</p>
+                    <h2 className="text-xl font-semibold text-foreground">ความปลอดภัย</h2>
+                    <p className="text-sm text-muted-foreground">ตั้งค่าความปลอดภัยของระบบ</p>
                   </div>
                 </div>
 
                 <div className="space-y-6">
                   <div className="flex items-center justify-between p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
                     <div className="flex items-center gap-3">
-                      <Check className="w-5 h-5 text-emerald-400" />
+                      <Check className="w-5 h-5 text-emerald-500" />
                       <div>
-                        <p className="text-white font-medium">HTTPS เปิดใช้งาน</p>
-                        <p className="text-sm text-slate-400">การเชื่อมต่อทั้งหมดถูกเข้ารหัส</p>
+                        <p className="text-foreground font-medium">HTTPS เปิดใช้งาน</p>
+                        <p className="text-sm text-muted-foreground">การเชื่อมต่อทั้งหมดถูกเข้ารหัส</p>
                       </div>
                     </div>
                     <Badge variant="success">ปลอดภัย</Badge>
@@ -284,13 +284,13 @@ export default function AdminSettingsPage() {
 
                   <div className="flex items-center justify-between p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
                     <div className="flex items-center gap-3">
-                      <AlertTriangle className="w-5 h-5 text-amber-400" />
+                      <AlertTriangle className="w-5 h-5 text-amber-500" />
                       <div>
-                        <p className="text-white font-medium">Two-Factor Authentication</p>
-                        <p className="text-sm text-slate-400">เพิ่มความปลอดภัยด้วย 2FA</p>
+                        <p className="text-foreground font-medium">Two-Factor Authentication</p>
+                        <p className="text-sm text-muted-foreground">เพิ่มความปลอดภัยด้วย 2FA</p>
                       </div>
                     </div>
-                    <Button size="sm" variant="outline" className="border-amber-500/30 text-amber-400">
+                    <Button size="sm" variant="outline" className="border-amber-500/30 text-amber-500">
                       เปิดใช้งาน
                     </Button>
                   </div>
@@ -303,8 +303,8 @@ export default function AdminSettingsPage() {
                     <Mail className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-semibold text-white">เปลี่ยนรหัสผ่าน</h2>
-                    <p className="text-sm text-slate-400">อัปเดตรหัสผ่านของคุณ</p>
+                    <h2 className="text-xl font-semibold text-foreground">เปลี่ยนรหัสผ่าน</h2>
+                    <p className="text-sm text-muted-foreground">อัปเดตรหัสผ่านของคุณ</p>
                   </div>
                 </div>
 
@@ -356,12 +356,12 @@ export default function AdminSettingsPage() {
                         className={`p-4 rounded-xl border cursor-pointer transition-all ${
                           theme.active 
                             ? 'border-amber-500 bg-amber-500/10' 
-                            : 'border-slate-700 hover:border-slate-600'
+                            : 'border-border hover:border-muted-foreground'
                         }`}
                       >
                         <div className={`h-20 rounded-lg bg-gradient-to-br ${theme.colors.join(' ')} mb-3`} />
                         <div className="flex items-center justify-between">
-                          <span className="text-white font-medium">{theme.name}</span>
+                          <span className="text-foreground font-medium">{theme.name}</span>
                           {theme.active && (
                             <div className="w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center">
                               <Check className="w-3 h-3 text-white" />
@@ -374,25 +374,25 @@ export default function AdminSettingsPage() {
                 </div>
 
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-slate-800/30 border border-slate-700/50">
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border">
                     <div>
-                      <p className="text-white font-medium">โหมดมืด</p>
-                      <p className="text-sm text-slate-400">ใช้โหมดมืดเป็นค่าเริ่มต้น</p>
+                      <p className="text-foreground font-medium">โหมดมืด</p>
+                      <p className="text-sm text-muted-foreground">ใช้โหมดมืดเป็นค่าเริ่มต้น</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" defaultChecked className="sr-only peer" />
-                      <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-yellow-400 peer-checked:to-amber-500"></div>
+                      <div className="w-11 h-6 bg-muted peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-yellow-400 peer-checked:to-amber-500"></div>
                     </label>
                   </div>
 
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-slate-800/30 border border-slate-700/50">
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border">
                     <div>
-                      <p className="text-white font-medium">แสดงเอฟเฟกต์แสง</p>
-                      <p className="text-sm text-slate-400">เปิด/ปิดเอฟเฟกต์ Glow และ Animation</p>
+                      <p className="text-foreground font-medium">แสดงเอฟเฟกต์แสง</p>
+                      <p className="text-sm text-muted-foreground">เปิด/ปิดเอฟเฟกต์ Glow และ Animation</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" defaultChecked className="sr-only peer" />
-                      <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-yellow-400 peer-checked:to-amber-500"></div>
+                      <div className="w-11 h-6 bg-muted peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-yellow-400 peer-checked:to-amber-500"></div>
                     </label>
                   </div>
                 </div>

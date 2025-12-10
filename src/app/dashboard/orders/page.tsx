@@ -90,10 +90,10 @@ export default function OrdersPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen pt-16 bg-slate-950">
+      <main className="min-h-screen pt-16 bg-background">
         <div className="container mx-auto px-4 py-8">
           {/* Back Link */}
-          <Link href="/dashboard" className="inline-flex items-center text-slate-400 hover:text-white mb-6 transition-colors">
+          <Link href="/dashboard" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6 transition-colors">
             <ArrowLeft className="w-4 h-4 mr-2" />
             กลับไปแดชบอร์ด
           </Link>
@@ -101,8 +101,8 @@ export default function OrdersPage() {
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <div>
-              <h1 className="text-3xl font-bold text-white mb-2">คำสั่งซื้อของฉัน</h1>
-              <p className="text-slate-400">ดูและติดตามคำสั่งซื้อทั้งหมดของคุณ</p>
+              <h1 className="text-3xl font-bold text-foreground mb-2">คำสั่งซื้อของฉัน</h1>
+              <p className="text-muted-foreground">ดูและติดตามคำสั่งซื้อทั้งหมดของคุณ</p>
             </div>
           </div>
 
@@ -146,60 +146,60 @@ export default function OrdersPage() {
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center">
-                            <Package className="w-6 h-6 text-violet-400" />
+                          <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center">
+                            <Package className="w-6 h-6 text-primary" />
                           </div>
                           <div>
-                            <p className="font-mono font-semibold text-white">{order.id}</p>
-                            <p className="text-sm text-slate-500">{order.date} • {order.items.length} รายการ</p>
+                            <p className="font-mono font-semibold text-foreground">{order.id}</p>
+                            <p className="text-sm text-muted-foreground">{order.date} • {order.items.length} รายการ</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-4">
                           <div className="text-right">
-                            <p className="font-bold text-white">{formatCurrency(order.total)}</p>
+                            <p className="font-bold text-foreground">{formatCurrency(order.total)}</p>
                             <Badge variant={status.variant} className="mt-1">
                               <status.icon className="w-3 h-3 mr-1" />
                               {status.label}
                             </Badge>
                           </div>
-                          <Eye className={`w-5 h-5 text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                          <Eye className={`w-5 h-5 text-muted-foreground transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
                         </div>
                       </div>
                     </div>
 
                     {/* Order Details (Expandable) */}
                     {isExpanded && (
-                      <div className="border-t border-slate-800 p-6 bg-slate-900/50">
+                      <div className="border-t border-border p-6 bg-muted/50">
                         {/* Items */}
-                        <h4 className="font-medium text-white mb-4">รายการสินค้า</h4>
+                        <h4 className="font-medium text-foreground mb-4">รายการสินค้า</h4>
                         <div className="space-y-3 mb-6">
                           {order.items.map((item, index) => (
-                            <div key={index} className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg">
+                            <div key={index} className="flex items-center justify-between p-3 bg-muted rounded-lg">
                               <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-lg bg-slate-700 flex items-center justify-center">
+                                <div className="w-10 h-10 rounded-lg bg-background flex items-center justify-center">
                                   {item.isDigital ? (
-                                    <Download className="w-5 h-5 text-violet-400" />
+                                    <Download className="w-5 h-5 text-primary" />
                                   ) : (
-                                    <Package className="w-5 h-5 text-slate-500" />
+                                    <Package className="w-5 h-5 text-muted-foreground" />
                                   )}
                                 </div>
                                 <div>
-                                  <p className="text-white">{item.name}</p>
-                                  <p className="text-sm text-slate-500">x{item.quantity}</p>
+                                  <p className="text-foreground">{item.name}</p>
+                                  <p className="text-sm text-muted-foreground">x{item.quantity}</p>
                                 </div>
                               </div>
-                              <span className="font-medium text-white">{formatCurrency(item.price)}</span>
+                              <span className="font-medium text-foreground">{formatCurrency(item.price)}</span>
                             </div>
                           ))}
                         </div>
 
                         {/* Tracking Number */}
                         {order.trackingNumber && (
-                          <div className="p-3 bg-violet-500/10 border border-violet-500/30 rounded-lg mb-4">
+                          <div className="p-3 bg-primary/10 border border-primary/30 rounded-lg mb-4">
                             <div className="flex items-center gap-2">
-                              <Truck className="w-4 h-4 text-violet-400" />
-                              <span className="text-sm text-slate-300">หมายเลขพัสดุ:</span>
-                              <span className="font-mono text-white">{order.trackingNumber}</span>
+                              <Truck className="w-4 h-4 text-primary" />
+                              <span className="text-sm text-muted-foreground">หมายเลขพัสดุ:</span>
+                              <span className="font-mono text-foreground">{order.trackingNumber}</span>
                             </div>
                           </div>
                         )}
@@ -224,9 +224,9 @@ export default function OrdersPage() {
             </div>
           ) : (
             <Card variant="glass" className="p-12 text-center">
-              <Package className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">ไม่พบคำสั่งซื้อ</h3>
-              <p className="text-slate-400 mb-6">
+              <Package className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-foreground mb-2">ไม่พบคำสั่งซื้อ</h3>
+              <p className="text-muted-foreground mb-6">
                 {searchQuery || statusFilter !== 'all'
                   ? 'ลองปรับตัวกรองหรือค้นหาด้วยคำอื่น'
                   : 'คุณยังไม่มีคำสั่งซื้อใดๆ'}

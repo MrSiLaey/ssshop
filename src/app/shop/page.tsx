@@ -171,12 +171,12 @@ function ShopContent() {
   return (
     <>
       <Header />
-      <main className="min-h-screen pt-16">
+      <main className="min-h-screen pt-16 bg-background">
         {/* Page Header */}
-        <section className="py-12 border-b border-stone-800">
+        <section className="py-12 border-b border-border">
           <div className="container mx-auto px-4">
-            <h1 className="text-4xl font-bold text-white mb-4">ร้านค้า</h1>
-            <p className="text-slate-400">
+            <h1 className="text-4xl font-bold text-foreground mb-4">ร้านค้า</h1>
+            <p className="text-muted-foreground">
               ค้นหาสินค้าที่คุณต้องการจากคอลเลกชันของเรา
             </p>
           </div>
@@ -188,7 +188,7 @@ function ShopContent() {
             <aside className="hidden lg:block w-64 flex-shrink-0">
               <Card variant="glass" className="p-6 sticky top-24">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="font-semibold text-white">ตัวกรอง</h3>
+                  <h3 className="font-semibold text-foreground">ตัวกรอง</h3>
                   <Button variant="ghost" size="sm" onClick={resetFilters}>
                     รีเซ็ต
                   </Button>
@@ -196,7 +196,7 @@ function ShopContent() {
 
                 {/* Product Type */}
                 <div className="mb-6">
-                  <h4 className="text-sm font-medium text-slate-300 mb-3">ประเภทสินค้า</h4>
+                  <h4 className="text-sm font-medium text-muted-foreground mb-3">ประเภทสินค้า</h4>
                   <div className="space-y-2">
                     {['ALL', 'DIGITAL', 'PHYSICAL'].map((type) => (
                       <label key={type} className="flex items-center space-x-3 cursor-pointer group">
@@ -205,9 +205,9 @@ function ShopContent() {
                           name="type"
                           checked={filters.type === type}
                           onChange={() => setType(type as any)}
-                          className="w-4 h-4 text-amber-500 bg-stone-800 border-stone-600 focus:ring-amber-500"
+                          className="w-4 h-4 text-primary bg-input border-border focus:ring-primary"
                         />
-                        <span className="text-sm text-slate-400 group-hover:text-white transition-colors">
+                        <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
                           {type === 'ALL' ? 'ทั้งหมด' : type === 'DIGITAL' ? 'สินค้าดิจิทัล' : 'สินค้าจัดส่ง'}
                         </span>
                       </label>
@@ -217,7 +217,7 @@ function ShopContent() {
 
                 {/* Categories */}
                 <div className="mb-6">
-                  <h4 className="text-sm font-medium text-slate-300 mb-3">หมวดหมู่</h4>
+                  <h4 className="text-sm font-medium text-muted-foreground mb-3">หมวดหมู่</h4>
                   <div className="space-y-2">
                     {categories.map((cat) => (
                       <button
@@ -225,8 +225,8 @@ function ShopContent() {
                         onClick={() => setCategory(cat.slug || null)}
                         className={`block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
                           filters.category === (cat.slug || null)
-                            ? 'bg-amber-500/20 text-amber-400'
-                            : 'text-slate-400 hover:bg-stone-800 hover:text-white'
+                            ? 'bg-primary/20 text-primary'
+                            : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                         }`}
                       >
                         {cat.name}
@@ -272,7 +272,7 @@ function ShopContent() {
                 </Select>
 
                 {/* View Toggle */}
-                <div className="hidden sm:flex items-center border border-stone-700 rounded-lg">
+                <div className="hidden sm:flex items-center border border-border rounded-lg">
                   <Button
                     variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
                     size="icon"
@@ -333,7 +333,7 @@ function ShopContent() {
               )}
 
               {/* Results Count */}
-              <p className="text-sm text-slate-400 mb-6">
+              <p className="text-sm text-muted-foreground mb-6">
                 พบ {sortedProducts.length} สินค้า
               </p>
 
@@ -352,11 +352,11 @@ function ShopContent() {
                         }`}
                       >
                         {/* Product Image */}
-                        <div className={`relative overflow-hidden bg-stone-800 ${
+                        <div className={`relative overflow-hidden bg-muted ${
                           viewMode === 'list' ? 'w-48 flex-shrink-0' : 'aspect-square'
                         }`}>
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <ShoppingBag className="w-16 h-16 text-stone-600 group-hover:text-amber-500/50 transition-colors" />
+                            <ShoppingBag className="w-16 h-16 text-muted-foreground group-hover:text-primary/50 transition-colors" />
                           </div>
                           
                           {/* Badges */}
@@ -376,27 +376,27 @@ function ShopContent() {
                         </div>
 
                         <CardContent className={`p-4 ${viewMode === 'list' ? 'flex-1' : ''}`}>
-                          <p className="text-xs text-amber-400 mb-1">{product.category.name}</p>
-                          <h3 className="font-semibold text-white group-hover:text-amber-400 transition-colors line-clamp-2 mb-2">
+                          <p className="text-xs text-primary mb-1">{product.category.name}</p>
+                          <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-2">
                             {product.name}
                           </h3>
                           
                           {/* Rating */}
                           <div className="flex items-center gap-2 mb-3">
                             <div className="flex items-center">
-                              <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                              <span className="text-sm text-white ml-1">{product.rating}</span>
+                              <Star className="w-4 h-4 text-primary fill-primary" />
+                              <span className="text-sm text-foreground ml-1">{product.rating}</span>
                             </div>
-                            <span className="text-xs text-slate-500">({product.reviewCount})</span>
+                            <span className="text-xs text-muted-foreground">({product.reviewCount})</span>
                           </div>
 
                           {/* Price */}
                           <div className="flex items-center gap-2">
-                            <span className="text-lg font-bold text-amber-400">
+                            <span className="text-lg font-bold text-primary">
                               {formatCurrency(product.price)}
                             </span>
                             {product.comparePrice && (
-                              <span className="text-sm text-slate-500 line-through">
+                              <span className="text-sm text-muted-foreground line-through">
                                 {formatCurrency(product.comparePrice)}
                               </span>
                             )}
@@ -408,9 +408,9 @@ function ShopContent() {
                 </div>
               ) : (
                 <Card variant="glass" className="p-12 text-center">
-                  <ShoppingBag className="w-16 h-16 text-stone-600 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-white mb-2">ไม่พบสินค้า</h3>
-                  <p className="text-slate-400 mb-6">ลองปรับตัวกรองหรือค้นหาด้วยคำอื่น</p>
+                  <ShoppingBag className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-foreground mb-2">ไม่พบสินค้า</h3>
+                  <p className="text-muted-foreground mb-6">ลองปรับตัวกรองหรือค้นหาด้วยคำอื่น</p>
                   <Button variant="outline" onClick={resetFilters}>
                     รีเซ็ตตัวกรอง
                   </Button>
@@ -430,8 +430,8 @@ export default function ShopPage() {
     <Suspense fallback={
       <>
         <Header />
-        <main className="min-h-screen py-16 flex items-center justify-center">
-          <div className="animate-spin h-8 w-8 border-2 border-amber-500 rounded-full border-t-transparent" />
+        <main className="min-h-screen py-16 flex items-center justify-center bg-background">
+          <div className="animate-spin h-8 w-8 border-2 border-primary rounded-full border-t-transparent" />
         </main>
         <Footer />
       </>

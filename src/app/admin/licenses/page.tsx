@@ -128,7 +128,7 @@ export default function AdminLicensesPage() {
       {/* Page Header */}
       <div>
         <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500 text-transparent bg-clip-text mb-2">ไลเซนส์</h1>
-        <p className="text-slate-400">จัดการไลเซนส์ทั้งหมดในระบบ</p>
+        <p className="text-muted-foreground">จัดการไลเซนส์ทั้งหมดในระบบ</p>
       </div>
 
       {/* Stats */}
@@ -139,8 +139,8 @@ export default function AdminLicensesPage() {
               <Key className="w-6 h-6 text-white" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{stats.total}</p>
-              <p className="text-sm text-slate-400">ทั้งหมด</p>
+              <p className="text-2xl font-bold text-foreground">{stats.total}</p>
+              <p className="text-sm text-muted-foreground">ทั้งหมด</p>
             </div>
           </div>
         </Card>
@@ -150,8 +150,8 @@ export default function AdminLicensesPage() {
               <Check className="w-6 h-6 text-white" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-emerald-400">{stats.active}</p>
-              <p className="text-sm text-slate-400">ใช้งานอยู่</p>
+              <p className="text-2xl font-bold text-emerald-500">{stats.active}</p>
+              <p className="text-sm text-muted-foreground">ใช้งานอยู่</p>
             </div>
           </div>
         </Card>
@@ -161,8 +161,8 @@ export default function AdminLicensesPage() {
               <AlertTriangle className="w-6 h-6 text-white" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-amber-400">{stats.expired}</p>
-              <p className="text-sm text-slate-400">หมดอายุ</p>
+              <p className="text-2xl font-bold text-amber-500">{stats.expired}</p>
+              <p className="text-sm text-muted-foreground">หมดอายุ</p>
             </div>
           </div>
         </Card>
@@ -172,8 +172,8 @@ export default function AdminLicensesPage() {
               <Ban className="w-6 h-6 text-white" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-zinc-400">{stats.revoked}</p>
-              <p className="text-sm text-slate-400">ถูกยกเลิก</p>
+              <p className="text-2xl font-bold text-muted-foreground">{stats.revoked}</p>
+              <p className="text-sm text-muted-foreground">ถูกยกเลิก</p>
             </div>
           </div>
         </Card>
@@ -209,7 +209,7 @@ export default function AdminLicensesPage() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="text-left text-sm text-slate-400 bg-slate-800/50">
+              <tr className="text-left text-sm text-muted-foreground bg-muted/50">
                 <th className="p-4 font-medium">License Key</th>
                 <th className="p-4 font-medium">สินค้า</th>
                 <th className="p-4 font-medium">ลูกค้า</th>
@@ -229,17 +229,17 @@ export default function AdminLicensesPage() {
                 )
 
                 return (
-                  <tr key={license.id} className="border-t border-slate-800/50 hover:bg-slate-800/30 transition-colors">
+                  <tr key={license.id} className="border-t border-border/50 hover:bg-muted/30 transition-colors">
                     <td className="p-4">
                       <div className="flex items-center gap-2">
-                        <Key className="w-4 h-4 text-amber-400" />
-                        <code className="font-mono text-amber-400">
+                        <Key className="w-4 h-4 text-amber-500" />
+                        <code className="font-mono text-amber-500">
                           {isVisible ? license.key : maskKey(license.key)}
                         </code>
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-6 w-6 text-slate-400 hover:text-amber-400"
+                          className="h-6 w-6 text-muted-foreground hover:text-amber-500"
                           onClick={() => toggleKeyVisibility(license.id)}
                         >
                           {isVisible ? (
@@ -251,7 +251,7 @@ export default function AdminLicensesPage() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-6 w-6 text-slate-400 hover:text-amber-400"
+                          className="h-6 w-6 text-muted-foreground hover:text-amber-500"
                           onClick={() => copyToClipboard(license.key, license.id)}
                         >
                           {isCopied ? (
@@ -263,41 +263,41 @@ export default function AdminLicensesPage() {
                       </div>
                     </td>
                     <td className="p-4">
-                      <p className="text-white font-medium">{license.productName}</p>
+                      <p className="text-foreground font-medium">{license.productName}</p>
                     </td>
                     <td className="p-4">
                       <div>
-                        <p className="text-white">{license.customer.name}</p>
-                        <p className="text-sm text-slate-500">{license.customer.email}</p>
+                        <p className="text-foreground">{license.customer.name}</p>
+                        <p className="text-sm text-muted-foreground">{license.customer.email}</p>
                       </div>
                     </td>
                     <td className="p-4">
                       <div className="flex items-center gap-2">
                         <Badge variant={status.variant}>{status.label}</Badge>
                         {license.status === 'ACTIVE' && daysUntilExpiry <= 30 && daysUntilExpiry > 0 && (
-                          <span title={`หมดอายุใน ${daysUntilExpiry} วัน`}><AlertTriangle className="w-4 h-4 text-amber-400" /></span>
+                          <span title={`หมดอายุใน ${daysUntilExpiry} วัน`}><AlertTriangle className="w-4 h-4 text-amber-500" /></span>
                         )}
                       </div>
                     </td>
                     <td className="p-4">
                       <span className={`${
-                        license.activations >= license.maxActivations ? 'text-amber-400' : 'text-slate-400'
+                        license.activations >= license.maxActivations ? 'text-amber-500' : 'text-muted-foreground'
                       }`}>
                         {license.activations}/{license.maxActivations}
                       </span>
                     </td>
                     <td className="p-4">
-                      <span className="text-slate-400">{license.expiresAt}</span>
+                      <span className="text-muted-foreground">{license.expiresAt}</span>
                     </td>
                     <td className="p-4">
                       <div className="flex items-center gap-2">
                         {license.status === 'ACTIVE' && (
-                          <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800" title="ยกเลิกไลเซนส์">
+                          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground hover:bg-muted" title="ยกเลิกไลเซนส์">
                             <Ban className="w-4 h-4" />
                           </Button>
                         )}
                         {license.status === 'EXPIRED' && (
-                          <Button variant="ghost" size="icon" className="text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10" title="ต่ออายุไลเซนส์">
+                          <Button variant="ghost" size="icon" className="text-emerald-500 hover:text-emerald-400 hover:bg-emerald-500/10" title="ต่ออายุไลเซนส์">
                             <RefreshCw className="w-4 h-4" />
                           </Button>
                         )}
@@ -311,13 +311,13 @@ export default function AdminLicensesPage() {
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between p-4 border-t border-slate-800">
-          <p className="text-sm text-slate-400">
+        <div className="flex items-center justify-between p-4 border-t border-border">
+          <p className="text-sm text-muted-foreground">
             แสดง {filteredLicenses.length} จาก {licenses.length} รายการ
           </p>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" disabled className="border-slate-700">ก่อนหน้า</Button>
-            <Button variant="outline" size="sm" disabled className="border-slate-700">ถัดไป</Button>
+            <Button variant="outline" size="sm" disabled className="border-border">ก่อนหน้า</Button>
+            <Button variant="outline" size="sm" disabled className="border-border">ถัดไป</Button>
           </div>
         </div>
       </Card>

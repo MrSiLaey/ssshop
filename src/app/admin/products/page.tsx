@@ -125,9 +125,9 @@ export default function AdminProductsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500 text-transparent bg-clip-text mb-2">สินค้า</h1>
-          <p className="text-slate-400">จัดการสินค้าทั้งหมดในร้านค้า</p>
+          <p className="text-muted-foreground">จัดการสินค้าทั้งหมดในร้านค้า</p>
         </div>
-        <Button className="bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400">
+        <Button className="bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-white">
           <Plus className="w-4 h-4 mr-2" />
           เพิ่มสินค้าใหม่
         </Button>
@@ -173,13 +173,13 @@ export default function AdminProductsPage() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="text-left text-sm text-slate-400 bg-slate-800/50">
+              <tr className="text-left text-sm text-muted-foreground bg-muted/50">
                 <th className="p-4">
                   <input
                     type="checkbox"
                     checked={selectedProducts.length === filteredProducts.length && filteredProducts.length > 0}
                     onChange={toggleSelectAll}
-                    className="w-4 h-4 rounded border-slate-600 bg-slate-800 text-amber-500 focus:ring-amber-500"
+                    className="w-4 h-4 rounded border-border bg-background text-amber-500 focus:ring-amber-500"
                   />
                 </th>
                 <th className="p-4 font-medium">สินค้า</th>
@@ -196,13 +196,13 @@ export default function AdminProductsPage() {
               {filteredProducts.map((product) => {
                 const status = statusConfig[product.status as keyof typeof statusConfig]
                 return (
-                  <tr key={product.id} className="border-t border-slate-800/50 hover:bg-slate-800/30 transition-colors">
+                  <tr key={product.id} className="border-t border-border/50 hover:bg-muted/30 transition-colors">
                     <td className="p-4">
                       <input
                         type="checkbox"
                         checked={selectedProducts.includes(product.id)}
                         onChange={() => toggleSelect(product.id)}
-                        className="w-4 h-4 rounded border-slate-600 bg-slate-800 text-amber-500 focus:ring-amber-500"
+                        className="w-4 h-4 rounded border-border bg-background text-amber-500 focus:ring-amber-500"
                       />
                     </td>
                     <td className="p-4">
@@ -210,31 +210,31 @@ export default function AdminProductsPage() {
                         <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
                           product.type === 'DIGITAL' 
                             ? 'bg-gradient-to-br from-yellow-500/20 to-amber-500/20' 
-                            : 'bg-slate-800'
+                            : 'bg-muted'
                         }`}>
                           {product.type === 'DIGITAL' ? (
-                            <Download className="w-5 h-5 text-amber-400" />
+                            <Download className="w-5 h-5 text-amber-500" />
                           ) : (
-                            <Package className="w-5 h-5 text-slate-500" />
+                            <Package className="w-5 h-5 text-muted-foreground" />
                           )}
                         </div>
                         <div>
-                          <p className="font-medium text-white">{product.name}</p>
-                          <p className="text-sm text-slate-500">{product.category}</p>
+                          <p className="font-medium text-foreground">{product.name}</p>
+                          <p className="text-sm text-muted-foreground">{product.category}</p>
                         </div>
                       </div>
                     </td>
                     <td className="p-4">
-                      <span className="font-mono text-slate-400">{product.sku}</span>
+                      <span className="font-mono text-muted-foreground">{product.sku}</span>
                     </td>
                     <td className="p-4">
-                      <span className="font-medium text-amber-400">{formatCurrency(product.price)}</span>
+                      <span className="font-medium text-amber-500">{formatCurrency(product.price)}</span>
                     </td>
                     <td className="p-4">
                       <span className={`${
-                        product.stock < 10 ? 'text-amber-400' :
-                        product.stock < 50 ? 'text-yellow-400' :
-                        'text-slate-400'
+                        product.stock < 10 ? 'text-amber-500' :
+                        product.stock < 50 ? 'text-yellow-500' :
+                        'text-muted-foreground'
                       }`}>
                         {product.stock === 999 ? '∞' : product.stock}
                       </span>
@@ -248,17 +248,17 @@ export default function AdminProductsPage() {
                       <Badge variant={status.variant}>{status.label}</Badge>
                     </td>
                     <td className="p-4">
-                      <span className="text-slate-400">{product.sales}</span>
+                      <span className="text-muted-foreground">{product.sales}</span>
                     </td>
                     <td className="p-4">
                       <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="icon" className="text-amber-400 hover:text-amber-300 hover:bg-amber-500/10">
+                        <Button variant="ghost" size="icon" className="text-amber-500 hover:text-amber-400 hover:bg-amber-500/10">
                           <Eye className="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white">
+                        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
                           <Edit className="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800">
+                        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground hover:bg-muted">
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
@@ -271,13 +271,13 @@ export default function AdminProductsPage() {
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between p-4 border-t border-slate-800">
-          <p className="text-sm text-slate-400">
+        <div className="flex items-center justify-between p-4 border-t border-border">
+          <p className="text-sm text-muted-foreground">
             แสดง {filteredProducts.length} จาก {products.length} รายการ
           </p>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" disabled className="border-slate-700">ก่อนหน้า</Button>
-            <Button variant="outline" size="sm" disabled className="border-slate-700">ถัดไป</Button>
+            <Button variant="outline" size="sm" disabled className="border-border">ก่อนหน้า</Button>
+            <Button variant="outline" size="sm" disabled className="border-border">ถัดไป</Button>
           </div>
         </div>
       </Card>

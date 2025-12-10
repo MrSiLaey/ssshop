@@ -10,12 +10,12 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ className, variant = 'default', ...props }, ref) => {
     const variants = {
-      default: 'bg-zinc-900/90 border-zinc-800',
-      glass: 'bg-black/60 backdrop-blur-xl border-amber-500/10',
-      neon: 'bg-zinc-900/90 border-amber-500/30 shadow-lg shadow-amber-500/10',
-      gradient: 'bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 border-zinc-700',
-      gold: 'bg-gradient-to-br from-zinc-900 via-zinc-900 to-amber-950/20 border-amber-500/20 shadow-lg shadow-amber-500/5',
-      luxury: 'bg-gradient-to-br from-zinc-900 via-black to-zinc-950 border-amber-500/20 shadow-xl shadow-amber-500/5 backdrop-blur-xl',
+      default: 'bg-card border-border',
+      glass: 'bg-card/60 backdrop-blur-xl border-primary/10',
+      neon: 'bg-card border-primary/30 shadow-lg shadow-primary/10',
+      gradient: 'bg-gradient-to-br from-card via-muted to-card border-border',
+      gold: 'bg-gradient-to-br from-card via-card to-primary/10 border-primary/20 shadow-lg shadow-primary/5',
+      luxury: 'bg-gradient-to-br from-card via-background to-muted border-primary/20 shadow-xl shadow-primary/5 backdrop-blur-xl',
     }
 
     return (
@@ -52,7 +52,7 @@ const CardTitle = React.forwardRef<
   <h3
     ref={ref}
     className={cn(
-      'text-xl font-semibold leading-none tracking-tight text-white',
+      'text-xl font-semibold leading-none tracking-tight text-foreground',
       className
     )}
     {...props}
@@ -66,7 +66,7 @@ const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn('text-sm text-gray-400', className)}
+    className={cn('text-sm text-muted-foreground', className)}
     {...props}
   />
 ))

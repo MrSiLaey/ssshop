@@ -62,12 +62,12 @@ export default function DashboardPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen pt-16 bg-stone-950">
+      <main className="min-h-screen pt-16 bg-background">
         <div className="container mx-auto px-4 py-8">
           {/* Page Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">แดชบอร์ด</h1>
-            <p className="text-slate-400">ยินดีต้อนรับกลับมา! จัดการบัญชีและคำสั่งซื้อของคุณ</p>
+            <h1 className="text-3xl font-bold text-foreground mb-2">แดชบอร์ด</h1>
+            <p className="text-muted-foreground">ยินดีต้อนรับกลับมา! จัดการบัญชีและคำสั่งซื้อของคุณ</p>
           </div>
 
           {/* Stats Cards */}
@@ -77,11 +77,11 @@ export default function DashboardPage() {
                 <Card variant="glass" className="p-6 card-hover shine">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-slate-400 mb-1">{card.title}</p>
-                      <p className="text-3xl font-bold text-white">{card.value}</p>
+                      <p className="text-sm text-muted-foreground mb-1">{card.title}</p>
+                      <p className="text-3xl font-bold text-foreground">{card.value}</p>
                     </div>
-                    <div className="w-12 h-12 rounded-lg bg-amber-500/20 flex items-center justify-center">
-                      <card.icon className="w-6 h-6 text-amber-400" />
+                    <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
+                      <card.icon className="w-6 h-6 text-primary" />
                     </div>
                   </div>
                 </Card>
@@ -93,7 +93,7 @@ export default function DashboardPage() {
             {/* Recent Orders */}
             <Card variant="glass" className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-white">คำสั่งซื้อล่าสุด</h2>
+                <h2 className="text-xl font-semibold text-foreground">คำสั่งซื้อล่าสุด</h2>
                 <Link href="/dashboard/orders">
                   <Button variant="ghost" size="sm">ดูทั้งหมด</Button>
                 </Link>
@@ -106,19 +106,19 @@ export default function DashboardPage() {
                     return (
                       <div
                         key={order.id}
-                        className="flex items-center justify-between p-4 bg-stone-800/50 rounded-lg"
+                        className="flex items-center justify-between p-4 bg-muted/50 rounded-lg"
                       >
                         <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-lg bg-stone-700 flex items-center justify-center">
-                            <ShoppingBag className="w-5 h-5 text-amber-400" />
+                          <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                            <ShoppingBag className="w-5 h-5 text-primary" />
                           </div>
                           <div>
-                            <p className="font-medium text-white">{order.id}</p>
-                            <p className="text-sm text-slate-500">{order.items} รายการ • {order.date}</p>
+                            <p className="font-medium text-foreground">{order.id}</p>
+                            <p className="text-sm text-muted-foreground">{order.items} รายการ • {order.date}</p>
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="font-semibold text-amber-400 mb-1">
+                          <p className="font-semibold text-primary mb-1">
                             {formatCurrency(order.total)}
                           </p>
                           <Badge variant={status.variant}>{status.label}</Badge>
@@ -129,8 +129,8 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <Package className="w-12 h-12 text-stone-600 mx-auto mb-4" />
-                  <p className="text-slate-400">ยังไม่มีคำสั่งซื้อ</p>
+                  <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">ยังไม่มีคำสั่งซื้อ</p>
                 </div>
               )}
             </Card>
@@ -138,7 +138,7 @@ export default function DashboardPage() {
             {/* Active Licenses */}
             <Card variant="glass" className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-white">ไลเซนส์ของฉัน</h2>
+                <h2 className="text-xl font-semibold text-foreground">ไลเซนส์ของฉัน</h2>
                 <Link href="/dashboard/licenses">
                   <Button variant="ghost" size="sm">ดูทั้งหมด</Button>
                 </Link>
@@ -149,19 +149,19 @@ export default function DashboardPage() {
                   {licenses.map((license) => (
                     <div
                       key={license.id}
-                      className="p-4 bg-stone-800/50 rounded-lg"
+                      className="p-4 bg-muted/50 rounded-lg"
                     >
                       <div className="flex items-center justify-between mb-3">
-                        <p className="font-medium text-white">{license.productName}</p>
+                        <p className="font-medium text-foreground">{license.productName}</p>
                         <Badge variant={license.status === 'ACTIVE' ? 'success' : 'secondary'}>
                           {license.status === 'ACTIVE' ? 'ใช้งานอยู่' : 'หมดอายุ'}
                         </Badge>
                       </div>
-                      <div className="flex items-center gap-2 p-2 bg-stone-900/50 rounded font-mono text-sm text-slate-300 mb-3">
-                        <Key className="w-4 h-4 text-amber-400" />
+                      <div className="flex items-center gap-2 p-2 bg-background/50 rounded font-mono text-sm text-muted-foreground mb-3">
+                        <Key className="w-4 h-4 text-primary" />
                         {license.key}
                       </div>
-                      <div className="flex justify-between text-sm text-slate-500">
+                      <div className="flex justify-between text-sm text-muted-foreground">
                         <span>ใช้งาน: {license.activations}/{license.maxActivations}</span>
                         <span>หมดอายุ: {license.expiresAt}</span>
                       </div>
@@ -170,8 +170,8 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <Key className="w-12 h-12 text-stone-600 mx-auto mb-4" />
-                  <p className="text-slate-400">ยังไม่มีไลเซนส์</p>
+                  <Key className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">ยังไม่มีไลเซนส์</p>
                 </div>
               )}
             </Card>
@@ -181,26 +181,26 @@ export default function DashboardPage() {
           <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <Link href="/shop">
               <Card variant="glass" className="p-4 card-hover text-center">
-                <ShoppingBag className="w-6 h-6 text-amber-400 mx-auto mb-2" />
-                <p className="text-sm text-white">ซื้อสินค้าเพิ่ม</p>
+                <ShoppingBag className="w-6 h-6 text-primary mx-auto mb-2" />
+                <p className="text-sm text-foreground">ซื้อสินค้าเพิ่ม</p>
               </Card>
             </Link>
             <Link href="/dashboard/orders">
               <Card variant="glass" className="p-4 card-hover text-center">
-                <Package className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
-                <p className="text-sm text-white">ดูคำสั่งซื้อ</p>
+                <Package className="w-6 h-6 text-primary mx-auto mb-2" />
+                <p className="text-sm text-foreground">ดูคำสั่งซื้อ</p>
               </Card>
             </Link>
             <Link href="/dashboard/licenses">
               <Card variant="glass" className="p-4 card-hover text-center">
-                <Key className="w-6 h-6 text-amber-300 mx-auto mb-2" />
-                <p className="text-sm text-white">จัดการไลเซนส์</p>
+                <Key className="w-6 h-6 text-primary mx-auto mb-2" />
+                <p className="text-sm text-foreground">จัดการไลเซนส์</p>
               </Card>
             </Link>
             <Link href="/dashboard/settings">
               <Card variant="glass" className="p-4 card-hover text-center">
-                <Settings className="w-6 h-6 text-yellow-500 mx-auto mb-2" />
-                <p className="text-sm text-white">ตั้งค่าบัญชี</p>
+                <Settings className="w-6 h-6 text-primary mx-auto mb-2" />
+                <p className="text-sm text-foreground">ตั้งค่าบัญชี</p>
               </Card>
             </Link>
           </div>

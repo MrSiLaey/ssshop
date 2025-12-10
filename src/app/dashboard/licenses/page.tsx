@@ -110,18 +110,18 @@ export default function LicensesPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen pt-16 bg-slate-950">
+      <main className="min-h-screen pt-16 bg-background">
         <div className="container mx-auto px-4 py-8">
           {/* Back Link */}
-          <Link href="/dashboard" className="inline-flex items-center text-slate-400 hover:text-white mb-6 transition-colors">
+          <Link href="/dashboard" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6 transition-colors">
             <ArrowLeft className="w-4 h-4 mr-2" />
             กลับไปแดชบอร์ด
           </Link>
 
           {/* Page Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">ไลเซนส์ของฉัน</h1>
-            <p className="text-slate-400">จัดการและติดตามไลเซนส์ทั้งหมดของคุณ</p>
+            <h1 className="text-3xl font-bold text-foreground mb-2">ไลเซนส์ของฉัน</h1>
+            <p className="text-muted-foreground">จัดการและติดตามไลเซนส์ทั้งหมดของคุณ</p>
           </div>
 
           {/* Search */}
@@ -152,17 +152,17 @@ export default function LicensesPage() {
                     <div className="p-6">
                       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-lg bg-violet-500/20 flex items-center justify-center">
-                            <Key className="w-6 h-6 text-violet-400" />
+                          <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
+                            <Key className="w-6 h-6 text-primary" />
                           </div>
                           <div>
                             <Link 
                               href={`/shop/${license.productSlug}`}
-                              className="font-semibold text-white hover:text-violet-400 transition-colors"
+                              className="font-semibold text-foreground hover:text-primary transition-colors"
                             >
                               {license.productName}
                             </Link>
-                            <p className="text-sm text-slate-500">ซื้อเมื่อ {license.createdAt}</p>
+                            <p className="text-sm text-muted-foreground">ซื้อเมื่อ {license.createdAt}</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-3">
@@ -177,9 +177,9 @@ export default function LicensesPage() {
                       </div>
 
                       {/* License Key */}
-                      <div className="flex items-center gap-2 p-3 bg-slate-800/50 rounded-lg mb-4">
-                        <Key className="w-4 h-4 text-violet-400" />
-                        <code className="flex-1 font-mono text-white">
+                      <div className="flex items-center gap-2 p-3 bg-muted rounded-lg mb-4">
+                        <Key className="w-4 h-4 text-primary" />
+                        <code className="flex-1 font-mono text-foreground">
                           {isVisible ? license.key : maskKey(license.key)}
                         </code>
                         <Button
@@ -210,21 +210,21 @@ export default function LicensesPage() {
 
                       {/* Stats */}
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                        <div className="p-3 bg-slate-800/30 rounded-lg">
-                          <div className="flex items-center gap-2 text-slate-400 mb-1">
+                        <div className="p-3 bg-muted/50 rounded-lg">
+                          <div className="flex items-center gap-2 text-muted-foreground mb-1">
                             <Monitor className="w-4 h-4" />
                             <span className="text-xs">การใช้งาน</span>
                           </div>
-                          <p className="font-semibold text-white">
+                          <p className="font-semibold text-foreground">
                             {license.activations}/{license.maxActivations}
                           </p>
                         </div>
-                        <div className="p-3 bg-slate-800/30 rounded-lg">
-                          <div className="flex items-center gap-2 text-slate-400 mb-1">
+                        <div className="p-3 bg-muted/50 rounded-lg">
+                          <div className="flex items-center gap-2 text-muted-foreground mb-1">
                             <Calendar className="w-4 h-4" />
                             <span className="text-xs">หมดอายุ</span>
                           </div>
-                          <p className="font-semibold text-white">{license.expiresAt}</p>
+                          <p className="font-semibold text-foreground">{license.expiresAt}</p>
                         </div>
                         <div className="col-span-2 sm:col-span-2 flex gap-2">
                           <Button
@@ -247,22 +247,22 @@ export default function LicensesPage() {
 
                       {/* Activation History */}
                       {isExpanded && license.activationHistory.length > 0 && (
-                        <div className="mt-4 pt-4 border-t border-slate-800">
-                          <h4 className="font-medium text-white mb-3">อุปกรณ์ที่ใช้งาน</h4>
+                        <div className="mt-4 pt-4 border-t border-border">
+                          <h4 className="font-medium text-foreground mb-3">อุปกรณ์ที่ใช้งาน</h4>
                           <div className="space-y-2">
                             {license.activationHistory.map((activation) => (
                               <div
                                 key={activation.id}
-                                className="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg"
+                                className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
                               >
                                 <div className="flex items-center gap-3">
-                                  <Monitor className="w-4 h-4 text-slate-400" />
+                                  <Monitor className="w-4 h-4 text-muted-foreground" />
                                   <div>
-                                    <p className="text-white">{activation.deviceName}</p>
-                                    <p className="text-xs text-slate-500">{activation.ipAddress}</p>
+                                    <p className="text-foreground">{activation.deviceName}</p>
+                                    <p className="text-xs text-muted-foreground">{activation.ipAddress}</p>
                                   </div>
                                 </div>
-                                <span className="text-sm text-slate-400">{activation.activatedAt}</span>
+                                <span className="text-sm text-muted-foreground">{activation.activatedAt}</span>
                               </div>
                             ))}
                           </div>
@@ -275,9 +275,9 @@ export default function LicensesPage() {
             </div>
           ) : (
             <Card variant="glass" className="p-12 text-center">
-              <Key className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">ไม่พบไลเซนส์</h3>
-              <p className="text-slate-400 mb-6">
+              <Key className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-foreground mb-2">ไม่พบไลเซนส์</h3>
+              <p className="text-muted-foreground mb-6">
                 {searchQuery ? 'ลองค้นหาด้วยคำอื่น' : 'คุณยังไม่มีไลเซนส์ใดๆ'}
               </p>
               <Link href="/shop?type=DIGITAL">

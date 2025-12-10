@@ -73,7 +73,7 @@ export default function AdminReportsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500 text-transparent bg-clip-text mb-2">รายงาน</h1>
-          <p className="text-slate-400">วิเคราะห์ข้อมูลและประสิทธิภาพร้านค้า</p>
+          <p className="text-muted-foreground">วิเคราะห์ข้อมูลและประสิทธิภาพร้านค้า</p>
         </div>
         <div className="flex gap-3">
           <Select value={timeRange} onValueChange={setTimeRange}>
@@ -88,7 +88,7 @@ export default function AdminReportsPage() {
               <SelectItem value="thisYear">ปีนี้</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="outline" className="border-amber-500/30 text-amber-400 hover:bg-amber-500/10">
+          <Button variant="outline" className="border-amber-500/30 text-amber-500 hover:bg-amber-500/10">
             <Download className="w-4 h-4 mr-2" />
             ดาวน์โหลด
           </Button>
@@ -105,15 +105,15 @@ export default function AdminReportsPage() {
                 <DollarSign className="w-6 h-6 text-white" />
               </div>
               <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-sm ${
-                revenueChange > 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-zinc-700/50 text-zinc-400'
+                revenueChange > 0 ? 'bg-emerald-500/20 text-emerald-500' : 'bg-muted text-muted-foreground'
               }`}>
                 {revenueChange > 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
                 {Math.abs(revenueChange).toFixed(1)}%
               </div>
             </div>
-            <p className="text-sm text-slate-400 mb-1">รายได้รวม</p>
-            <p className="text-2xl font-bold text-white">{formatCurrency(revenueData.thisMonth)}</p>
-            <p className="text-xs text-slate-500 mt-2">เทียบกับเดือนที่แล้ว</p>
+            <p className="text-sm text-muted-foreground mb-1">รายได้รวม</p>
+            <p className="text-2xl font-bold text-foreground">{formatCurrency(revenueData.thisMonth)}</p>
+            <p className="text-xs text-muted-foreground mt-2">เทียบกับเดือนที่แล้ว</p>
           </div>
         </Card>
 
@@ -124,14 +124,14 @@ export default function AdminReportsPage() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center">
                 <ShoppingCart className="w-6 h-6 text-white" />
               </div>
-              <div className="flex items-center gap-1 px-2 py-1 rounded-full text-sm bg-emerald-500/20 text-emerald-400">
+              <div className="flex items-center gap-1 px-2 py-1 rounded-full text-sm bg-emerald-500/20 text-emerald-500">
                 <ArrowUpRight className="w-4 h-4" />
                 8.5%
               </div>
             </div>
-            <p className="text-sm text-slate-400 mb-1">คำสั่งซื้อทั้งหมด</p>
-            <p className="text-2xl font-bold text-white">{orderStats.total.toLocaleString()}</p>
-            <p className="text-xs text-slate-500 mt-2">{orderStats.completed} สำเร็จ</p>
+            <p className="text-sm text-muted-foreground mb-1">คำสั่งซื้อทั้งหมด</p>
+            <p className="text-2xl font-bold text-foreground">{orderStats.total.toLocaleString()}</p>
+            <p className="text-xs text-muted-foreground mt-2">{orderStats.completed} สำเร็จ</p>
           </div>
         </Card>
 
@@ -142,14 +142,14 @@ export default function AdminReportsPage() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center">
                 <Package className="w-6 h-6 text-white" />
               </div>
-              <div className="flex items-center gap-1 px-2 py-1 rounded-full text-sm bg-emerald-500/20 text-emerald-400">
+              <div className="flex items-center gap-1 px-2 py-1 rounded-full text-sm bg-emerald-500/20 text-emerald-500">
                 <ArrowUpRight className="w-4 h-4" />
                 12%
               </div>
             </div>
-            <p className="text-sm text-slate-400 mb-1">สินค้าขายได้</p>
-            <p className="text-2xl font-bold text-white">2,847</p>
-            <p className="text-xs text-slate-500 mt-2">156 สินค้าในคลัง</p>
+            <p className="text-sm text-muted-foreground mb-1">สินค้าขายได้</p>
+            <p className="text-2xl font-bold text-foreground">2,847</p>
+            <p className="text-xs text-muted-foreground mt-2">156 สินค้าในคลัง</p>
           </div>
         </Card>
 
@@ -160,14 +160,14 @@ export default function AdminReportsPage() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-400 to-amber-400 flex items-center justify-center">
                 <Users className="w-6 h-6 text-white" />
               </div>
-              <div className="flex items-center gap-1 px-2 py-1 rounded-full text-sm bg-emerald-500/20 text-emerald-400">
+              <div className="flex items-center gap-1 px-2 py-1 rounded-full text-sm bg-emerald-500/20 text-emerald-500">
                 <ArrowUpRight className="w-4 h-4" />
                 5.2%
               </div>
             </div>
-            <p className="text-sm text-slate-400 mb-1">ลูกค้าทั้งหมด</p>
-            <p className="text-2xl font-bold text-white">1,589</p>
-            <p className="text-xs text-slate-500 mt-2">48 ลูกค้าใหม่เดือนนี้</p>
+            <p className="text-sm text-muted-foreground mb-1">ลูกค้าทั้งหมด</p>
+            <p className="text-2xl font-bold text-foreground">1,589</p>
+            <p className="text-xs text-muted-foreground mt-2">48 ลูกค้าใหม่เดือนนี้</p>
           </div>
         </Card>
       </div>
@@ -181,9 +181,9 @@ export default function AdminReportsPage() {
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center">
                 <BarChart3 className="w-5 h-5 text-white" />
               </div>
-              <h2 className="text-xl font-semibold text-white">รายได้รายเดือน</h2>
+              <h2 className="text-xl font-semibold text-foreground">รายได้รายเดือน</h2>
             </div>
-            <Button variant="ghost" size="sm" className="text-amber-400 hover:text-amber-300">
+            <Button variant="ghost" size="sm" className="text-amber-500 hover:text-amber-400">
               ดูเพิ่มเติม
             </Button>
           </div>
@@ -192,14 +192,14 @@ export default function AdminReportsPage() {
           <div className="space-y-4">
             {monthlyData.map((data, index) => (
               <div key={data.month} className="flex items-center gap-4">
-                <span className="w-12 text-sm text-slate-400">{data.month}</span>
-                <div className="flex-1 h-8 bg-slate-800 rounded-lg overflow-hidden">
+                <span className="w-12 text-sm text-muted-foreground">{data.month}</span>
+                <div className="flex-1 h-8 bg-muted rounded-lg overflow-hidden">
                   <div 
                     className="h-full bg-gradient-to-r from-yellow-400 via-amber-500 to-yellow-600 rounded-lg transition-all duration-500"
                     style={{ width: `${(data.revenue / 1400000) * 100}%` }}
                   />
                 </div>
-                <span className="w-24 text-sm text-white text-right">{formatCurrency(data.revenue)}</span>
+                <span className="w-24 text-sm text-foreground text-right">{formatCurrency(data.revenue)}</span>
               </div>
             ))}
           </div>
@@ -212,7 +212,7 @@ export default function AdminReportsPage() {
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center">
                 <PieChart className="w-5 h-5 text-white" />
               </div>
-              <h2 className="text-xl font-semibold text-white">หมวดหมู่ยอดนิยม</h2>
+              <h2 className="text-xl font-semibold text-foreground">หมวดหมู่ยอดนิยม</h2>
             </div>
           </div>
           
@@ -227,14 +227,14 @@ export default function AdminReportsPage() {
                       index === 2 ? 'bg-yellow-600' :
                       'bg-amber-400'
                     }`} />
-                    <span className="text-white font-medium">{category.name}</span>
+                    <span className="text-foreground font-medium">{category.name}</span>
                   </div>
                   <div className="text-right">
-                    <span className="text-amber-400 font-semibold">{formatCurrency(category.revenue)}</span>
-                    <span className="text-slate-500 text-sm ml-2">({category.percentage}%)</span>
+                    <span className="text-amber-500 font-semibold">{formatCurrency(category.revenue)}</span>
+                    <span className="text-muted-foreground text-sm ml-2">({category.percentage}%)</span>
                   </div>
                 </div>
-                <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div className="h-2 bg-muted rounded-full overflow-hidden">
                   <div 
                     className={`h-full rounded-full transition-all duration-500 ${
                       index === 0 ? 'bg-yellow-400' :
@@ -245,7 +245,7 @@ export default function AdminReportsPage() {
                     style={{ width: `${category.percentage}%` }}
                   />
                 </div>
-                <p className="text-xs text-slate-500">{category.orders} คำสั่งซื้อ</p>
+                <p className="text-xs text-muted-foreground">{category.orders} คำสั่งซื้อ</p>
               </div>
             ))}
           </div>
@@ -261,19 +261,19 @@ export default function AdminReportsPage() {
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center">
                 <Activity className="w-5 h-5 text-white" />
               </div>
-              <h2 className="text-xl font-semibold text-white">กิจกรรมล่าสุด</h2>
+              <h2 className="text-xl font-semibold text-foreground">กิจกรรมล่าสุด</h2>
             </div>
             <Badge variant="gold" className="animate-pulse">Live</Badge>
           </div>
           
           <div className="space-y-4">
             {recentActivity.map((activity, index) => (
-              <div key={index} className="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-800/50 transition-colors">
+              <div key={index} className="flex items-center gap-4 p-3 rounded-xl hover:bg-muted/50 transition-colors">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                  activity.type === 'order' ? 'bg-amber-500/20 text-amber-400' :
-                  activity.type === 'payment' ? 'bg-emerald-500/20 text-emerald-400' :
-                  activity.type === 'customer' ? 'bg-blue-500/20 text-blue-400' :
-                  'bg-yellow-500/20 text-yellow-400'
+                  activity.type === 'order' ? 'bg-amber-500/20 text-amber-500' :
+                  activity.type === 'payment' ? 'bg-emerald-500/20 text-emerald-500' :
+                  activity.type === 'customer' ? 'bg-blue-500/20 text-blue-500' :
+                  'bg-yellow-500/20 text-yellow-500'
                 }`}>
                   {activity.type === 'order' ? <ShoppingCart className="w-5 h-5" /> :
                    activity.type === 'payment' ? <DollarSign className="w-5 h-5" /> :
@@ -281,11 +281,11 @@ export default function AdminReportsPage() {
                    <Flame className="w-5 h-5" />}
                 </div>
                 <div className="flex-1">
-                  <p className="text-white">{activity.message}</p>
-                  <p className="text-sm text-slate-500">{activity.time}</p>
+                  <p className="text-foreground">{activity.message}</p>
+                  <p className="text-sm text-muted-foreground">{activity.time}</p>
                 </div>
                 {activity.amount && (
-                  <span className="text-amber-400 font-semibold">{formatCurrency(activity.amount)}</span>
+                  <span className="text-amber-500 font-semibold">{formatCurrency(activity.amount)}</span>
                 )}
               </div>
             ))}
@@ -298,16 +298,16 @@ export default function AdminReportsPage() {
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-white" />
             </div>
-            <h2 className="text-xl font-semibold text-white">สถานะคำสั่งซื้อ</h2>
+            <h2 className="text-xl font-semibold text-foreground">สถานะคำสั่งซื้อ</h2>
           </div>
           
           <div className="space-y-4">
             <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-emerald-400">สำเร็จ</span>
-                <span className="text-2xl font-bold text-white">{orderStats.completed}</span>
+                <span className="text-emerald-500">สำเร็จ</span>
+                <span className="text-2xl font-bold text-foreground">{orderStats.completed}</span>
               </div>
-              <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+              <div className="h-2 bg-muted rounded-full overflow-hidden">
                 <div 
                   className="h-full bg-emerald-500 rounded-full"
                   style={{ width: `${(orderStats.completed / orderStats.total) * 100}%` }}
@@ -317,10 +317,10 @@ export default function AdminReportsPage() {
 
             <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-amber-400">รอดำเนินการ</span>
-                <span className="text-2xl font-bold text-white">{orderStats.pending}</span>
+                <span className="text-amber-500">รอดำเนินการ</span>
+                <span className="text-2xl font-bold text-foreground">{orderStats.pending}</span>
               </div>
-              <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+              <div className="h-2 bg-muted rounded-full overflow-hidden">
                 <div 
                   className="h-full bg-amber-500 rounded-full"
                   style={{ width: `${(orderStats.pending / orderStats.total) * 100}%` }}
@@ -328,14 +328,14 @@ export default function AdminReportsPage() {
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-zinc-700/30 border border-zinc-600/30">
+            <div className="p-4 rounded-xl bg-muted/50 border border-border">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-zinc-400">ยกเลิก</span>
-                <span className="text-2xl font-bold text-white">{orderStats.cancelled}</span>
+                <span className="text-muted-foreground">ยกเลิก</span>
+                <span className="text-2xl font-bold text-foreground">{orderStats.cancelled}</span>
               </div>
-              <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+              <div className="h-2 bg-muted rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-zinc-500 rounded-full"
+                  className="h-full bg-muted-foreground rounded-full"
                   style={{ width: `${(orderStats.cancelled / orderStats.total) * 100}%` }}
                 />
               </div>

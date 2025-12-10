@@ -69,12 +69,12 @@ function LoginForm() {
 
   return (
     <main className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Animated Gold Background */}
+      {/* Animated Background */}
       <div className="fixed inset-0">
-        <div className="absolute inset-0 bg-black" />
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-yellow-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-500/5 rounded-full blur-3xl" />
+        <div className="absolute inset-0 bg-background" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl" />
       </div>
 
       <div className="w-full max-w-md relative z-10">
@@ -95,7 +95,7 @@ function LoginForm() {
             </div>
           </Link>
           <h1 className="text-3xl font-bold text-gradient mb-2">ยินดีต้อนรับกลับมา</h1>
-          <p className="text-zinc-400">เข้าสู่ระบบเพื่อจัดการบัญชีของคุณ</p>
+          <p className="text-muted-foreground">เข้าสู่ระบบเพื่อจัดการบัญชีของคุณ</p>
         </div>
 
         {/* Login Card */}
@@ -106,38 +106,38 @@ function LoginForm() {
               variant="outline"
               onClick={() => handleOAuthSignIn('google')}
               disabled={loading}
-              className="border-amber-500/30 hover:border-amber-500/50 hover:bg-amber-500/10"
+              className="border-border hover:border-primary/50 hover:bg-primary/10"
             >
-              <Chrome className="w-5 h-5 mr-2 text-amber-400" />
-              <span className="text-amber-100">Google</span>
+              <Chrome className="w-5 h-5 mr-2 text-primary" />
+              <span className="text-foreground">Google</span>
             </Button>
             <Button
               variant="outline"
               onClick={() => handleOAuthSignIn('github')}
               disabled={loading}
-              className="border-amber-500/30 hover:border-amber-500/50 hover:bg-amber-500/10"
+              className="border-border hover:border-primary/50 hover:bg-primary/10"
             >
-              <Github className="w-5 h-5 mr-2 text-amber-400" />
-              <span className="text-amber-100">GitHub</span>
+              <Github className="w-5 h-5 mr-2 text-primary" />
+              <span className="text-foreground">GitHub</span>
             </Button>
           </div>
 
           {/* Divider */}
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-amber-500/20" />
+              <div className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-zinc-900 px-3 text-zinc-500">หรือใช้อีเมล</span>
+              <span className="bg-card px-3 text-muted-foreground">หรือใช้อีเมล</span>
             </div>
           </div>
 
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-zinc-300">อีเมล</Label>
+              <Label htmlFor="email" className="text-foreground">อีเมล</Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-500/50" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/50" />
                 <Input
                   id="email"
                   name="email"
@@ -145,7 +145,7 @@ function LoginForm() {
                   placeholder="your@email.com"
                   value={formData.email}
                   onChange={handleChange}
-                  className="pl-10 bg-zinc-900/50 border-zinc-800 focus:border-amber-500 text-white placeholder:text-zinc-600"
+                  className="pl-10 bg-input border-border focus:border-primary text-foreground placeholder:text-muted-foreground"
                   required
                 />
               </div>
@@ -153,13 +153,13 @@ function LoginForm() {
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-zinc-300">รหัสผ่าน</Label>
-                <Link href="/auth/forgot-password" className="text-sm text-amber-400 hover:text-amber-300 transition-colors">
+                <Label htmlFor="password" className="text-foreground">รหัสผ่าน</Label>
+                <Link href="/auth/forgot-password" className="text-sm text-primary hover:text-primary/80 transition-colors">
                   ลืมรหัสผ่าน?
                 </Link>
               </div>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-500/50" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/50" />
                 <Input
                   id="password"
                   name="password"
@@ -167,13 +167,13 @@ function LoginForm() {
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
-                  className="pl-10 pr-10 bg-zinc-900/50 border-zinc-800 focus:border-amber-500 text-white placeholder:text-zinc-600"
+                  className="pl-10 pr-10 bg-input border-border focus:border-primary text-foreground placeholder:text-muted-foreground"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-amber-400 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -193,9 +193,9 @@ function LoginForm() {
           </form>
 
           {/* Register Link */}
-          <p className="text-center mt-8 text-zinc-400">
+          <p className="text-center mt-8 text-muted-foreground">
             ยังไม่มีบัญชี?{' '}
-            <Link href="/auth/register" className="text-amber-400 hover:text-amber-300 font-medium transition-colors">
+            <Link href="/auth/register" className="text-primary hover:text-primary/80 font-medium transition-colors">
               สมัครสมาชิก
             </Link>
           </p>
@@ -203,7 +203,7 @@ function LoginForm() {
 
         {/* Back to Home */}
         <p className="text-center mt-6">
-          <Link href="/" className="text-zinc-500 hover:text-zinc-300 text-sm transition-colors">
+          <Link href="/" className="text-muted-foreground hover:text-foreground text-sm transition-colors">
             ← กลับหน้าแรก
           </Link>
         </p>
@@ -215,8 +215,8 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-black">
-        <div className="animate-spin h-10 w-10 border-4 border-amber-500 rounded-full border-t-transparent" />
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-spin h-10 w-10 border-4 border-primary rounded-full border-t-transparent" />
       </div>
     }>
       <LoginForm />

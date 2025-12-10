@@ -120,16 +120,16 @@ export default function AdminDashboardPage() {
             </div>
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500 text-transparent bg-clip-text">แดชบอร์ด</h1>
-              <p className="text-slate-400">ภาพรวมร้านค้าของคุณในวันนี้</p>
+              <p className="text-muted-foreground">ภาพรวมร้านค้าของคุณในวันนี้</p>
             </div>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="border-amber-500/30 text-amber-400 hover:bg-amber-500/10">
+          <Button variant="outline" className="border-amber-500/30 text-amber-500 hover:bg-amber-500/10">
             <Activity className="w-4 h-4 mr-2" />
             รายงานสด
           </Button>
-          <Button className="bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400">
+          <Button className="bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-white">
             <Zap className="w-4 h-4 mr-2" />
             Quick Actions
           </Button>
@@ -150,8 +150,8 @@ export default function AdminDashboardPage() {
                 </div>
                 <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-sm ${
                   stat.trend === 'up' 
-                    ? 'bg-emerald-500/20 text-emerald-400' 
-                    : 'bg-zinc-700/50 text-zinc-400'
+                    ? 'bg-emerald-500/20 text-emerald-500' 
+                    : 'bg-muted text-muted-foreground'
                 }`}>
                   {stat.trend === 'up' ? (
                     <ArrowUpRight className="w-4 h-4" />
@@ -161,8 +161,8 @@ export default function AdminDashboardPage() {
                   <span>{Math.abs(stat.change)}%</span>
                 </div>
               </div>
-              <p className="text-sm text-slate-400 mb-1">{stat.title}</p>
-              <p className="text-3xl font-bold text-white">
+              <p className="text-sm text-muted-foreground mb-1">{stat.title}</p>
+              <p className="text-3xl font-bold text-foreground">
                 {stat.title.includes('รายได้') ? formatCurrency(stat.value) : stat.value.toLocaleString()}
               </p>
             </div>
@@ -179,17 +179,17 @@ export default function AdminDashboardPage() {
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center">
                 <TrendingUp className="w-5 h-5 text-white" />
               </div>
-              <h2 className="text-xl font-semibold text-white">รายได้รายสัปดาห์</h2>
+              <h2 className="text-xl font-semibold text-foreground">รายได้รายสัปดาห์</h2>
             </div>
-            <Button variant="ghost" size="sm" className="text-amber-400 hover:text-amber-300">ดูทั้งหมด</Button>
+            <Button variant="ghost" size="sm" className="text-amber-500 hover:text-amber-400">ดูทั้งหมด</Button>
           </div>
           <div className="h-64 flex items-center justify-center border border-dashed border-amber-500/30 rounded-xl bg-gradient-to-br from-yellow-500/5 to-amber-500/5">
             <div className="text-center">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-yellow-400/20 to-amber-500/20 flex items-center justify-center">
-                <TrendingUp className="w-8 h-8 text-amber-400" />
+                <TrendingUp className="w-8 h-8 text-amber-500" />
               </div>
-              <p className="text-amber-400 font-medium">กราฟรายได้ (Recharts)</p>
-              <p className="text-sm text-slate-500 mt-1">ติดตั้ง recharts เพื่อแสดงกราฟ</p>
+              <p className="text-amber-500 font-medium">กราฟรายได้ (Recharts)</p>
+              <p className="text-sm text-muted-foreground mt-1">ติดตั้ง recharts เพื่อแสดงกราฟ</p>
             </div>
           </div>
         </Card>
@@ -201,26 +201,26 @@ export default function AdminDashboardPage() {
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center">
                 <Target className="w-5 h-5 text-white" />
               </div>
-              <h2 className="text-xl font-semibold text-white">สินค้าขายดี</h2>
+              <h2 className="text-xl font-semibold text-foreground">สินค้าขายดี</h2>
             </div>
-            <Button variant="ghost" size="sm" className="text-amber-400 hover:text-amber-300">ดูทั้งหมด</Button>
+            <Button variant="ghost" size="sm" className="text-amber-500 hover:text-amber-400">ดูทั้งหมด</Button>
           </div>
           <div className="space-y-4">
             {topProducts.map((product, index) => (
-              <div key={product.name} className="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-800/50 transition-colors">
+              <div key={product.name} className="flex items-center gap-4 p-3 rounded-xl hover:bg-muted/50 transition-colors">
                 <span className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
                   index === 0 ? 'bg-gradient-to-br from-yellow-500 to-amber-500 text-white shadow-lg shadow-amber-500/30' :
                   index === 1 ? 'bg-gradient-to-br from-slate-400 to-slate-500 text-white' :
                   index === 2 ? 'bg-gradient-to-br from-amber-600 to-amber-700 text-white' :
-                  'bg-slate-800 text-slate-500'
+                  'bg-muted text-muted-foreground'
                 }`}>
                   {index + 1}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-white font-medium truncate">{product.name}</p>
-                  <p className="text-sm text-slate-500">{product.sales} ขาย</p>
+                  <p className="text-foreground font-medium truncate">{product.name}</p>
+                  <p className="text-sm text-muted-foreground">{product.sales} ขาย</p>
                 </div>
-                <span className="text-amber-400 font-semibold">
+                <span className="text-amber-500 font-semibold">
                   {formatCurrency(product.revenue)}
                 </span>
               </div>
@@ -236,14 +236,14 @@ export default function AdminDashboardPage() {
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center">
               <ShoppingCart className="w-5 h-5 text-white" />
             </div>
-            <h2 className="text-xl font-semibold text-white">คำสั่งซื้อล่าสุด</h2>
+            <h2 className="text-xl font-semibold text-foreground">คำสั่งซื้อล่าสุด</h2>
           </div>
-          <Button variant="ghost" size="sm" className="text-amber-400 hover:text-amber-300">ดูทั้งหมด</Button>
+          <Button variant="ghost" size="sm" className="text-amber-500 hover:text-amber-400">ดูทั้งหมด</Button>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="text-left text-sm text-slate-400 border-b border-amber-500/20">
+              <tr className="text-left text-sm text-muted-foreground border-b border-border">
                 <th className="pb-4 font-medium">หมายเลข</th>
                 <th className="pb-4 font-medium">ลูกค้า</th>
                 <th className="pb-4 font-medium">ยอดรวม</th>
@@ -256,27 +256,27 @@ export default function AdminDashboardPage() {
               {recentOrders.map((order) => {
                 const status = statusConfig[order.status as keyof typeof statusConfig]
                 return (
-                  <tr key={order.id} className="border-b border-slate-800/50 last:border-0 hover:bg-slate-800/30 transition-colors">
+                  <tr key={order.id} className="border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors">
                     <td className="py-4">
-                      <span className="font-mono text-amber-400">{order.id}</span>
+                      <span className="font-mono text-amber-500">{order.id}</span>
                     </td>
                     <td className="py-4">
                       <div>
-                        <p className="text-white font-medium">{order.customer}</p>
-                        <p className="text-sm text-slate-500">{order.email}</p>
+                        <p className="text-foreground font-medium">{order.customer}</p>
+                        <p className="text-sm text-muted-foreground">{order.email}</p>
                       </div>
                     </td>
                     <td className="py-4">
-                      <span className="font-semibold text-white">{formatCurrency(order.total)}</span>
+                      <span className="font-semibold text-foreground">{formatCurrency(order.total)}</span>
                     </td>
                     <td className="py-4">
                       <Badge variant={status.variant}>{status.label}</Badge>
                     </td>
                     <td className="py-4">
-                      <span className="text-slate-400">{order.date}</span>
+                      <span className="text-muted-foreground">{order.date}</span>
                     </td>
                     <td className="py-4">
-                      <Button variant="ghost" size="icon" className="text-amber-400 hover:text-amber-300 hover:bg-amber-500/10">
+                      <Button variant="ghost" size="icon" className="text-amber-500 hover:text-amber-400 hover:bg-amber-500/10">
                         <Eye className="w-4 h-4" />
                       </Button>
                     </td>

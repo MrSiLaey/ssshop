@@ -141,10 +141,10 @@ export default function AdminCustomersPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500 text-transparent bg-clip-text mb-2">ลูกค้า</h1>
-          <p className="text-slate-400">จัดการข้อมูลลูกค้าทั้งหมด</p>
+          <p className="text-muted-foreground">จัดการข้อมูลลูกค้าทั้งหมด</p>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline" className="border-amber-500/30 text-amber-400 hover:bg-amber-500/10">
+          <Button variant="outline" className="border-amber-500/30 text-amber-500 hover:bg-amber-500/10">
             <Download className="w-4 h-4 mr-2" />
             ส่งออก
           </Button>
@@ -163,8 +163,8 @@ export default function AdminCustomersPage() {
               <ShoppingBag className="w-6 h-6 text-white" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{totalCustomers}</p>
-              <p className="text-sm text-slate-400">ลูกค้าทั้งหมด</p>
+              <p className="text-2xl font-bold text-foreground">{totalCustomers}</p>
+              <p className="text-sm text-muted-foreground">ลูกค้าทั้งหมด</p>
             </div>
           </div>
         </Card>
@@ -174,8 +174,8 @@ export default function AdminCustomersPage() {
               <Crown className="w-6 h-6 text-white" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{vipCustomers}</p>
-              <p className="text-sm text-slate-400">ลูกค้า VIP</p>
+              <p className="text-2xl font-bold text-foreground">{vipCustomers}</p>
+              <p className="text-sm text-muted-foreground">ลูกค้า VIP</p>
             </div>
           </div>
         </Card>
@@ -185,8 +185,8 @@ export default function AdminCustomersPage() {
               <TrendingUp className="w-6 h-6 text-white" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{newCustomers}</p>
-              <p className="text-sm text-slate-400">ลูกค้าใหม่</p>
+              <p className="text-2xl font-bold text-foreground">{newCustomers}</p>
+              <p className="text-sm text-muted-foreground">ลูกค้าใหม่</p>
             </div>
           </div>
         </Card>
@@ -196,8 +196,8 @@ export default function AdminCustomersPage() {
               <Star className="w-6 h-6 text-white" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{formatCurrency(totalRevenue)}</p>
-              <p className="text-sm text-slate-400">รายได้รวม</p>
+              <p className="text-2xl font-bold text-foreground">{formatCurrency(totalRevenue)}</p>
+              <p className="text-sm text-muted-foreground">รายได้รวม</p>
             </div>
           </div>
         </Card>
@@ -233,13 +233,13 @@ export default function AdminCustomersPage() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="text-left text-sm text-slate-400 bg-slate-800/50">
+              <tr className="text-left text-sm text-muted-foreground bg-muted/50">
                 <th className="p-4">
                   <input
                     type="checkbox"
                     checked={selectedCustomers.length === filteredCustomers.length && filteredCustomers.length > 0}
                     onChange={toggleSelectAll}
-                    className="w-4 h-4 rounded border-slate-600 bg-slate-800 text-amber-500 focus:ring-amber-500"
+                    className="w-4 h-4 rounded border-border bg-background text-amber-500 focus:ring-amber-500"
                   />
                 </th>
                 <th className="p-4 font-medium">ลูกค้า</th>
@@ -256,13 +256,13 @@ export default function AdminCustomersPage() {
                 const status = statusConfig[customer.status as keyof typeof statusConfig]
                 const StatusIcon = status.icon
                 return (
-                  <tr key={customer.id} className="border-b border-slate-800/50 last:border-0 hover:bg-slate-800/30 transition-colors">
+                  <tr key={customer.id} className="border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors">
                     <td className="p-4">
                       <input
                         type="checkbox"
                         checked={selectedCustomers.includes(customer.id)}
                         onChange={() => toggleSelect(customer.id)}
-                        className="w-4 h-4 rounded border-slate-600 bg-slate-800 text-amber-500 focus:ring-amber-500"
+                        className="w-4 h-4 rounded border-border bg-background text-amber-500 focus:ring-amber-500"
                       />
                     </td>
                     <td className="p-4">
@@ -277,8 +277,8 @@ export default function AdminCustomersPage() {
                           {customer.avatar}
                         </div>
                         <div>
-                          <p className="text-white font-medium">{customer.name}</p>
-                          <div className="flex items-center gap-1 text-xs text-slate-500">
+                          <p className="text-foreground font-medium">{customer.name}</p>
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
                             <MapPin className="w-3 h-3" />
                             {customer.address}
                           </div>
@@ -287,21 +287,21 @@ export default function AdminCustomersPage() {
                     </td>
                     <td className="p-4">
                       <div className="space-y-1">
-                        <div className="flex items-center gap-2 text-sm text-slate-300">
-                          <Mail className="w-4 h-4 text-slate-500" />
+                        <div className="flex items-center gap-2 text-sm text-foreground">
+                          <Mail className="w-4 h-4 text-muted-foreground" />
                           {customer.email}
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-slate-400">
-                          <Phone className="w-4 h-4 text-slate-500" />
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Phone className="w-4 h-4 text-muted-foreground" />
                           {customer.phone}
                         </div>
                       </div>
                     </td>
                     <td className="p-4">
-                      <span className="text-white font-medium">{customer.totalOrders} รายการ</span>
+                      <span className="text-foreground font-medium">{customer.totalOrders} รายการ</span>
                     </td>
                     <td className="p-4">
-                      <span className="text-amber-400 font-semibold">{formatCurrency(customer.totalSpent)}</span>
+                      <span className="text-amber-500 font-semibold">{formatCurrency(customer.totalSpent)}</span>
                     </td>
                     <td className="p-4">
                       <Badge variant={status.variant} className="flex items-center gap-1 w-fit">
@@ -310,14 +310,14 @@ export default function AdminCustomersPage() {
                       </Badge>
                     </td>
                     <td className="p-4">
-                      <span className="text-slate-400 text-sm">{customer.lastOrder}</span>
+                      <span className="text-muted-foreground text-sm">{customer.lastOrder}</span>
                     </td>
                     <td className="p-4">
                       <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="icon" className="text-amber-400 hover:text-amber-300 hover:bg-amber-500/10">
+                        <Button variant="ghost" size="icon" className="text-amber-500 hover:text-amber-400 hover:bg-amber-500/10">
                           <Eye className="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="text-slate-400 hover:text-slate-300">
+                        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
                           <MoreHorizontal className="w-4 h-4" />
                         </Button>
                       </div>
@@ -330,18 +330,18 @@ export default function AdminCustomersPage() {
         </div>
 
         {/* Pagination */}
-        <div className="p-4 border-t border-slate-800 flex items-center justify-between">
-          <p className="text-sm text-slate-400">
+        <div className="p-4 border-t border-border flex items-center justify-between">
+          <p className="text-sm text-muted-foreground">
             แสดง {filteredCustomers.length} จาก {customers.length} ลูกค้า
           </p>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" disabled className="border-slate-700">
+            <Button variant="outline" size="sm" disabled className="border-border">
               ก่อนหน้า
             </Button>
-            <Button variant="outline" size="sm" className="border-amber-500/30 text-amber-400">
+            <Button variant="outline" size="sm" className="border-amber-500/30 text-amber-500">
               1
             </Button>
-            <Button variant="outline" size="sm" disabled className="border-slate-700">
+            <Button variant="outline" size="sm" disabled className="border-border">
               ถัดไป
             </Button>
           </div>

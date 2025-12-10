@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useSession, signOut } from 'next-auth/react'
+import { useTheme } from 'next-themes'
 import { 
   ShoppingCart, 
   User, 
@@ -13,19 +14,27 @@ import {
   Package,
   Key,
   Settings,
-  LayoutDashboard
+  LayoutDashboard,
+  Sun,
+  Moon
 } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui'
 import { useCartStore, useUIStore } from '@/stores'
 import { cn } from '@/lib/utils'
 
 export function Header() {
   const { data: session } = useSession()
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const cartItemCount = useCartStore((state) => state.getItemCount())
   const { toggleCart, toggleSearch } = useUIStore()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const navLinks = [
     { href: '/shop', label: 'ร้านค้า' },
@@ -36,23 +45,16 @@ export function Header() {
   ]
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-yellow-500/20 bg-black/90 backdrop-blur-xl">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="container mx-auto px-4">
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 group">
             <div className="relative">
               {/* Glow effect behind logo */}
-              <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/30 via-amber-500/20 to-yellow-400/30 blur-xl scale-150 group-hover:scale-175 transition-transform duration-500" />
-              <div className="relative h-14 w-auto">
-                <Image
-                  src="/images/logo.png"
-                  alt="Soft Stop Shop"
-                  width={220}
-                  height={56}
-                  className="h-14 w-auto object-contain drop-shadow-[0_0_20px_rgba(252,211,77,0.6)] group-hover:drop-shadow-[0_0_30px_rgba(252,211,77,0.8)] transition-all duration-300"
-                  priority
-                />
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/30 via-primary/20 to-primary/30 blur-xl scale-150 group-hover:scale-175 transition-transform duration-500" />
+              <div className="relative h-14 w-auto flex items-center">
+                <span className="text-2xl font-bold text-primary">Soft Stop Shop</span>
               </div>
             </div>
           </Link>
@@ -63,7 +65,7 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-gray-300 hover:text-yellow-400 transition-colors"
+                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
               >
                 {link.label}
               </Link>
@@ -72,12 +74,28 @@ export function Header() {
 
           {/* Actions */}
           <div className="flex items-center space-x-2">
+            {/* Theme Toggle */}
+            {mounted && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                className="text-muted-foreground hover:text-primary"
+              >
+                {theme === 'dark' ? (
+                  <Moon className="h-5 w-5" />
+                ) : (
+                  <Sun className="h-5 w-5" />
+                )}
+              </Button>
+            )}
+
             {/* Search */}
             <Button
               variant="ghost"
               size="icon"
               onClick={toggleSearch}
-              className="text-gray-300 hover:text-yellow-400"
+              className="text-muted-foreground hover:text-primary"
             >
               <Search className="h-5 w-5" />
             </Button>
@@ -87,11 +105,11 @@ export function Header() {
               variant="ghost"
               size="icon"
               onClick={toggleCart}
-              className="relative text-gray-300 hover:text-yellow-400"
+              className="relative text-muted-foreground hover:text-primary"
             >
               <ShoppingCart className="h-5 w-5" />
               {cartItemCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-r from-yellow-500 to-amber-500 text-xs font-bold text-black">
+                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
                   {cartItemCount}
                 </span>
               )}
@@ -104,13 +122,13 @@ export function Header() {
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="text-gray-300 hover:text-yellow-400"
+                  className="text-muted-foreground hover:text-primary"
                 >
                   {session.user.image ? (
                     <img
                       src={session.user.image}
                       alt={session.user.name || 'User'}
-                      className="h-8 w-8 rounded-full ring-2 ring-yellow-500/50"
+                      className="h-8 w-8 rounded-full ring-2 ring-primary/50"
                     />
                   ) : (
                     <User className="h-5 w-5" />
@@ -119,14 +137,14 @@ export function Header() {
 
                 {/* Dropdown */}
                 {isUserMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-56 rounded-xl border border-yellow-500/20 bg-black/95 backdrop-blur-xl p-2 shadow-xl shadow-black/50">
-                    <div className="px-3 py-2 border-b border-yellow-500/20 mb-2">
-                      <p className="text-sm font-medium text-white">{session.user.name}</p>
-                      <p className="text-xs text-gray-400">{session.user.email}</p>
+                  <div className="absolute right-0 mt-2 w-56 rounded-xl border border-border bg-popover/95 backdrop-blur-xl p-2 shadow-xl">
+                    <div className="px-3 py-2 border-b border-border mb-2">
+                      <p className="text-sm font-medium text-foreground">{session.user.name}</p>
+                      <p className="text-xs text-muted-foreground">{session.user.email}</p>
                     </div>
                     <Link
                       href="/dashboard"
-                      className="flex items-center space-x-2 rounded-lg px-3 py-2 text-sm text-gray-300 hover:bg-yellow-500/10 hover:text-yellow-400"
+                      className="flex items-center space-x-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-primary/10 hover:text-primary"
                       onClick={() => setIsUserMenuOpen(false)}
                     >
                       <LayoutDashboard className="h-4 w-4" />
@@ -134,7 +152,7 @@ export function Header() {
                     </Link>
                     <Link
                       href="/dashboard/orders"
-                      className="flex items-center space-x-2 rounded-lg px-3 py-2 text-sm text-gray-300 hover:bg-yellow-500/10 hover:text-yellow-400"
+                      className="flex items-center space-x-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-primary/10 hover:text-primary"
                       onClick={() => setIsUserMenuOpen(false)}
                     >
                       <Package className="h-4 w-4" />
@@ -142,7 +160,7 @@ export function Header() {
                     </Link>
                     <Link
                       href="/dashboard/licenses"
-                      className="flex items-center space-x-2 rounded-lg px-3 py-2 text-sm text-gray-300 hover:bg-yellow-500/10 hover:text-yellow-400"
+                      className="flex items-center space-x-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-primary/10 hover:text-primary"
                       onClick={() => setIsUserMenuOpen(false)}
                     >
                       <Key className="h-4 w-4" />
@@ -150,7 +168,7 @@ export function Header() {
                     </Link>
                     <Link
                       href="/dashboard/settings"
-                      className="flex items-center space-x-2 rounded-lg px-3 py-2 text-sm text-gray-300 hover:bg-yellow-500/10 hover:text-yellow-400"
+                      className="flex items-center space-x-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-primary/10 hover:text-primary"
                       onClick={() => setIsUserMenuOpen(false)}
                     >
                       <Settings className="h-4 w-4" />
@@ -159,7 +177,7 @@ export function Header() {
                     {session.user.role === 'ADMIN' && (
                       <Link
                         href="/admin"
-                        className="flex items-center space-x-2 rounded-lg px-3 py-2 text-sm text-yellow-400 hover:bg-yellow-500/10"
+                        className="flex items-center space-x-2 rounded-lg px-3 py-2 text-sm text-primary hover:bg-primary/10"
                         onClick={() => setIsUserMenuOpen(false)}
                       >
                         <Settings className="h-4 w-4" />
@@ -168,7 +186,7 @@ export function Header() {
                     )}
                     <button
                       onClick={() => signOut()}
-                      className="flex w-full items-center space-x-2 rounded-lg px-3 py-2 text-sm text-red-400 hover:bg-red-500/10"
+                      className="flex w-full items-center space-x-2 rounded-lg px-3 py-2 text-sm text-destructive hover:bg-destructive/10"
                     >
                       <LogOut className="h-4 w-4" />
                       <span>ออกจากระบบ</span>
@@ -179,12 +197,12 @@ export function Header() {
             ) : (
               <div className="hidden sm:flex items-center space-x-2">
                 <Link href="/auth/login">
-                  <Button variant="ghost" size="sm" className="text-slate-400 hover:text-amber-400">
+                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
                     เข้าสู่ระบบ
                   </Button>
                 </Link>
                 <Link href="/auth/register">
-                  <Button size="sm" className="bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400">สมัครสมาชิก</Button>
+                  <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">สมัครสมาชิก</Button>
                 </Link>
               </div>
             )}
@@ -193,7 +211,7 @@ export function Header() {
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden text-slate-400 hover:text-amber-400"
+              className="lg:hidden text-muted-foreground hover:text-primary"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -204,27 +222,27 @@ export function Header() {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="lg:hidden border-t border-amber-500/20 bg-slate-950/95 backdrop-blur-xl">
+        <div className="lg:hidden border-t border-border bg-background/95 backdrop-blur-xl">
           <nav className="container mx-auto px-4 py-4 space-y-2">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="block rounded-lg px-4 py-2 text-slate-300 hover:bg-amber-500/10 hover:text-amber-400"
+                className="block rounded-lg px-4 py-2 text-muted-foreground hover:bg-primary/10 hover:text-primary"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {link.label}
               </Link>
             ))}
             {!session && (
-              <div className="pt-4 border-t border-amber-500/20 space-y-2">
+              <div className="pt-4 border-t border-border space-y-2">
                 <Link href="/auth/login" className="block">
-                  <Button variant="outline" className="w-full border-amber-500/30 text-amber-400">
+                  <Button variant="outline" className="w-full border-primary/30 text-primary">
                     เข้าสู่ระบบ
                   </Button>
                 </Link>
                 <Link href="/auth/register" className="block">
-                  <Button className="w-full bg-gradient-to-r from-yellow-400 to-amber-500">สมัครสมาชิก</Button>
+                  <Button className="w-full bg-primary text-primary-foreground">สมัครสมาชิก</Button>
                 </Link>
               </div>
             )}

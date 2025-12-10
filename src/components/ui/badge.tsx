@@ -10,25 +10,25 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default:
-          'bg-amber-500/10 text-amber-400 border border-amber-500/20',
+          'bg-primary/10 text-primary border border-primary/20',
         secondary:
-          'bg-zinc-800 text-zinc-300 border border-zinc-700',
+          'bg-muted text-muted-foreground border border-border',
         success:
-          'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20',
+          'bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border border-emerald-500/20',
         warning:
-          'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20',
+          'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border border-yellow-500/20',
         destructive:
-          'bg-red-500/10 text-red-400 border border-red-500/20',
+          'bg-red-500/10 text-red-500 dark:text-red-400 border border-red-500/20',
         info:
-          'bg-amber-500/10 text-amber-400 border border-amber-500/20',
+          'bg-primary/10 text-primary border border-primary/20',
         outline:
-          'text-amber-200 border border-amber-500/50',
+          'text-primary border border-primary/50',
         gold:
-          'bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-amber-300 border border-amber-500/30 shadow-sm shadow-amber-500/20',
+          'bg-gradient-to-r from-yellow-500/20 to-primary/20 text-primary border border-primary/30 shadow-sm shadow-primary/20',
         luxury:
-          'bg-black text-amber-400 border border-amber-500/30 shadow-lg shadow-amber-500/10',
+          'bg-background text-primary border border-primary/30 shadow-lg shadow-primary/10',
         white:
-          'bg-white/10 text-white border border-white/20',
+          'bg-foreground/10 text-foreground border border-foreground/20',
       },
     },
     defaultVariants: {

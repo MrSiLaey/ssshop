@@ -100,9 +100,9 @@ export default function CheckoutPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen pt-16">
+      <main className="min-h-screen pt-16 bg-background">
         <div className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold text-white mb-8">ชำระเงิน</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-8">ชำระเงิน</h1>
 
           <form onSubmit={handleSubmit}>
             <div className="grid lg:grid-cols-3 gap-8">
@@ -110,7 +110,7 @@ export default function CheckoutPage() {
               <div className="lg:col-span-2 space-y-6">
                 {/* Contact Information */}
                 <Card variant="glass" className="p-6">
-                  <h2 className="text-xl font-semibold text-white mb-6">ข้อมูลติดต่อ</h2>
+                  <h2 className="text-xl font-semibold text-foreground mb-6">ข้อมูลติดต่อ</h2>
                   
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
@@ -154,8 +154,8 @@ export default function CheckoutPage() {
                 {/* Shipping Address (for physical products) */}
                 {hasPhysicalProducts && (
                   <Card variant="glass" className="p-6">
-                    <h2 className="text-xl font-semibold text-white mb-6 flex items-center">
-                      <Package className="w-5 h-5 mr-2 text-amber-400" />
+                    <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center">
+                      <Package className="w-5 h-5 mr-2 text-primary" />
                       ที่อยู่จัดส่ง
                     </h2>
                     
@@ -169,7 +169,7 @@ export default function CheckoutPage() {
                         onChange={handleInputChange}
                         required
                         rows={3}
-                        className="w-full px-4 py-3 bg-stone-900/50 border border-stone-700 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
+                        className="w-full px-4 py-3 bg-input border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                       />
                     </div>
                   </Card>
@@ -179,10 +179,10 @@ export default function CheckoutPage() {
                 {hasDigitalProducts && (
                   <Card variant="luxury" className="p-4">
                     <div className="flex items-start gap-3">
-                      <Download className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+                      <Download className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                       <div>
-                        <p className="font-medium text-white">สินค้าดิจิทัล</p>
-                        <p className="text-sm text-slate-400">
+                        <p className="font-medium text-foreground">สินค้าดิจิทัล</p>
+                        <p className="text-sm text-muted-foreground">
                           คุณมีสินค้าดิจิทัลในตะกร้า ลิงก์ดาวน์โหลดและไลเซนส์จะถูกส่งไปยังอีเมลของคุณทันทีหลังชำระเงินสำเร็จ
                         </p>
                       </div>
@@ -192,14 +192,14 @@ export default function CheckoutPage() {
 
                 {/* Payment Method */}
                 <Card variant="glass" className="p-6">
-                  <h2 className="text-xl font-semibold text-white mb-6">วิธีการชำระเงิน</h2>
+                  <h2 className="text-xl font-semibold text-foreground mb-6">วิธีการชำระเงิน</h2>
                   
                   <div className="space-y-4">
                     {/* Credit Card */}
                     <label className={`flex items-center p-4 rounded-lg border-2 cursor-pointer transition-colors ${
                       paymentMethod === 'card'
-                        ? 'border-amber-500 bg-amber-500/10'
-                        : 'border-stone-700 hover:border-stone-600'
+                        ? 'border-primary bg-primary/10'
+                        : 'border-border hover:border-muted-foreground'
                     }`}>
                       <input
                         type="radio"
@@ -211,23 +211,23 @@ export default function CheckoutPage() {
                       />
                       <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mr-4 ${
                         paymentMethod === 'card'
-                          ? 'border-amber-500 bg-amber-500'
-                          : 'border-stone-600'
+                          ? 'border-primary bg-primary'
+                          : 'border-muted-foreground'
                       }`}>
-                        {paymentMethod === 'card' && <Check className="w-3 h-3 text-white" />}
+                        {paymentMethod === 'card' && <Check className="w-3 h-3 text-primary-foreground" />}
                       </div>
-                      <CreditCard className="w-6 h-6 text-amber-400 mr-3" />
+                      <CreditCard className="w-6 h-6 text-primary mr-3" />
                       <div>
-                        <p className="font-medium text-white">บัตรเครดิต / เดบิต</p>
-                        <p className="text-sm text-slate-400">Visa, Mastercard, JCB</p>
+                        <p className="font-medium text-foreground">บัตรเครดิต / เดบิต</p>
+                        <p className="text-sm text-muted-foreground">Visa, Mastercard, JCB</p>
                       </div>
                     </label>
 
                     {/* PromptPay */}
                     <label className={`flex items-center p-4 rounded-lg border-2 cursor-pointer transition-colors ${
                       paymentMethod === 'promptpay'
-                        ? 'border-amber-500 bg-amber-500/10'
-                        : 'border-stone-700 hover:border-stone-600'
+                        ? 'border-primary bg-primary/10'
+                        : 'border-border hover:border-muted-foreground'
                     }`}>
                       <input
                         type="radio"
@@ -239,15 +239,15 @@ export default function CheckoutPage() {
                       />
                       <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mr-4 ${
                         paymentMethod === 'promptpay'
-                          ? 'border-amber-500 bg-amber-500'
-                          : 'border-stone-600'
+                          ? 'border-primary bg-primary'
+                          : 'border-muted-foreground'
                       }`}>
-                        {paymentMethod === 'promptpay' && <Check className="w-3 h-3 text-white" />}
+                        {paymentMethod === 'promptpay' && <Check className="w-3 h-3 text-primary-foreground" />}
                       </div>
-                      <QrCode className="w-6 h-6 text-amber-400 mr-3" />
+                      <QrCode className="w-6 h-6 text-primary mr-3" />
                       <div>
-                        <p className="font-medium text-white">พร้อมเพย์ (PromptPay)</p>
-                        <p className="text-sm text-slate-400">สแกน QR Code เพื่อชำระเงิน</p>
+                        <p className="font-medium text-foreground">พร้อมเพย์ (PromptPay)</p>
+                        <p className="text-sm text-muted-foreground">สแกน QR Code เพื่อชำระเงิน</p>
                       </div>
                     </label>
                   </div>
@@ -257,45 +257,45 @@ export default function CheckoutPage() {
               {/* Order Summary */}
               <div className="lg:col-span-1">
                 <Card variant="glass" className="p-6 sticky top-24">
-                  <h2 className="text-xl font-bold text-white mb-6">สรุปคำสั่งซื้อ</h2>
+                  <h2 className="text-xl font-bold text-foreground mb-6">สรุปคำสั่งซื้อ</h2>
 
                   {/* Items */}
                   <div className="space-y-4 mb-6">
                     {items.map((item) => (
                       <div key={item.productId} className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-lg bg-stone-800 flex-shrink-0 flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-lg bg-muted flex-shrink-0 flex items-center justify-center">
                           {item.isDigital ? (
-                            <Download className="w-5 h-5 text-amber-500/50" />
+                            <Download className="w-5 h-5 text-primary/50" />
                           ) : (
-                            <Package className="w-5 h-5 text-stone-600" />
+                            <Package className="w-5 h-5 text-muted-foreground" />
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm text-white truncate">{item.name}</p>
-                          <p className="text-xs text-slate-500">x{item.quantity}</p>
+                          <p className="text-sm text-foreground truncate">{item.name}</p>
+                          <p className="text-xs text-muted-foreground">x{item.quantity}</p>
                         </div>
-                        <span className="text-sm text-amber-400">
+                        <span className="text-sm text-primary">
                           {formatCurrency(item.price * item.quantity)}
                         </span>
                       </div>
                     ))}
                   </div>
 
-                  <div className="space-y-3 mb-6 border-t border-stone-800 pt-4">
-                    <div className="flex justify-between text-slate-400">
+                  <div className="space-y-3 mb-6 border-t border-border pt-4">
+                    <div className="flex justify-between text-muted-foreground">
                       <span>รวมสินค้า</span>
                       <span>{formatCurrency(total)}</span>
                     </div>
-                    <div className="flex justify-between text-slate-400">
+                    <div className="flex justify-between text-muted-foreground">
                       <span>ค่าจัดส่ง</span>
-                      <span className="text-amber-400">ฟรี</span>
+                      <span className="text-primary">ฟรี</span>
                     </div>
                   </div>
 
-                  <div className="border-t border-stone-800 pt-4 mb-6">
+                  <div className="border-t border-border pt-4 mb-6">
                     <div className="flex justify-between items-center">
-                      <span className="text-lg font-semibold text-white">ยอดรวมทั้งหมด</span>
-                      <span className="text-2xl font-bold text-amber-400">{formatCurrency(total)}</span>
+                      <span className="text-lg font-semibold text-foreground">ยอดรวมทั้งหมด</span>
+                      <span className="text-2xl font-bold text-primary">{formatCurrency(total)}</span>
                     </div>
                   </div>
 
@@ -314,8 +314,8 @@ export default function CheckoutPage() {
                   </Button>
 
                   {/* Security Badge */}
-                  <div className="flex items-center justify-center gap-2 mt-4 text-xs text-slate-500">
-                    <ShieldCheck className="w-4 h-4 text-amber-500" />
+                  <div className="flex items-center justify-center gap-2 mt-4 text-xs text-muted-foreground">
+                    <ShieldCheck className="w-4 h-4 text-primary" />
                     <span>การชำระเงินปลอดภัย 100% ด้วย SSL</span>
                   </div>
                 </Card>

@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
@@ -123,7 +124,7 @@ model Product {
   productType     ProductType @default(PHYSICAL)
   
   // Media
-  images          String[]
+  images          Json?
   thumbnail       String?
   
   // SEO
@@ -221,7 +222,7 @@ model LicenseKey {
   lastActivatedAt DateTime?
   
   // Metadata
-  machineIds    String[]
+  machineIds    Json?
   metadata      Json?
   
   createdAt     DateTime      @default(now())

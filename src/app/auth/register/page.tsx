@@ -94,12 +94,12 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-4 py-12 bg-black">
+    <main className="min-h-screen flex items-center justify-center px-4 py-12 bg-background">
       {/* Background Effects */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-500/5 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl" />
       </div>
 
       <div className="w-full max-w-md relative z-10">
@@ -119,10 +119,10 @@ export default function RegisterPage() {
           </Link>
         </div>
 
-        <Card variant="luxury" className="p-8 border border-amber-500/20">
+        <Card variant="luxury" className="p-8 border border-primary/20">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-white mb-2">สมัครสมาชิก</h1>
-            <p className="text-zinc-400">สร้างบัญชีใหม่เพื่อเริ่มช็อปปิ้ง</p>
+            <h1 className="text-2xl font-bold text-foreground mb-2">สมัครสมาชิก</h1>
+            <p className="text-muted-foreground">สร้างบัญชีใหม่เพื่อเริ่มช็อปปิ้ง</p>
           </div>
 
           {/* OAuth Buttons */}
@@ -140,10 +140,10 @@ export default function RegisterPage() {
           {/* Divider */}
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-zinc-800"></div>
+              <div className="w-full border-t border-border"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-zinc-900 text-zinc-400">หรือ</span>
+              <span className="px-4 bg-card text-muted-foreground">หรือ</span>
             </div>
           </div>
 
@@ -193,7 +193,7 @@ export default function RegisterPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -205,11 +205,11 @@ export default function RegisterPage() {
                   {passwordRequirements.map((req, index) => (
                     <div key={index} className="flex items-center gap-2 text-xs">
                       <div className={`w-4 h-4 rounded-full flex items-center justify-center ${
-                        req.met ? 'bg-amber-500/20 text-amber-400' : 'bg-zinc-700 text-zinc-500'
+                        req.met ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'
                       }`}>
                         {req.met && <Check className="w-3 h-3" />}
                       </div>
-                      <span className={req.met ? 'text-amber-400' : 'text-zinc-500'}>
+                      <span className={req.met ? 'text-primary' : 'text-muted-foreground'}>
                         {req.label}
                       </span>
                     </div>
@@ -243,15 +243,15 @@ export default function RegisterPage() {
                 checked={formData.acceptTerms}
                 onChange={handleChange}
                 required
-                className="mt-1 w-4 h-4 rounded border-zinc-600 bg-zinc-800 text-amber-500 focus:ring-amber-500"
+                className="mt-1 w-4 h-4 rounded border-border bg-input text-primary focus:ring-primary"
               />
-              <label htmlFor="acceptTerms" className="text-sm text-zinc-400">
+              <label htmlFor="acceptTerms" className="text-sm text-muted-foreground">
                 ฉันยอมรับ{' '}
-                <Link href="/terms" className="text-amber-400 hover:underline">
+                <Link href="/terms" className="text-primary hover:underline">
                   ข้อกำหนดการใช้งาน
                 </Link>{' '}
                 และ{' '}
-                <Link href="/privacy" className="text-amber-400 hover:underline">
+                <Link href="/privacy" className="text-primary hover:underline">
                   นโยบายความเป็นส่วนตัว
                 </Link>
               </label>
@@ -279,9 +279,9 @@ export default function RegisterPage() {
           </form>
 
           {/* Login Link */}
-          <p className="text-center mt-6 text-zinc-400">
+          <p className="text-center mt-6 text-muted-foreground">
             มีบัญชีอยู่แล้ว?{' '}
-            <Link href="/auth/login" className="text-amber-400 hover:text-amber-300 font-medium">
+            <Link href="/auth/login" className="text-primary hover:text-primary/80 font-medium">
               เข้าสู่ระบบ
             </Link>
           </p>
@@ -289,7 +289,7 @@ export default function RegisterPage() {
 
         {/* Back to Home */}
         <p className="text-center mt-6">
-          <Link href="/" className="text-zinc-500 hover:text-white text-sm">
+          <Link href="/" className="text-muted-foreground hover:text-foreground text-sm">
             ← กลับหน้าแรก
           </Link>
         </p>

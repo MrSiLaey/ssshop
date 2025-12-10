@@ -53,13 +53,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="th" className="dark">
-      <body className={`${inter.variable} ${orbitron.variable} font-sans antialiased bg-black text-white`}>
+    <html lang="th" suppressHydrationWarning>
+      <body className={`${inter.variable} ${orbitron.variable} font-sans antialiased bg-background text-foreground`}>
         <Providers>
           {/* Background Effects */}
           <div className="fixed inset-0 -z-10">
-            {/* Gradient Background - Black with subtle gold */}
-            <div className="absolute inset-0 bg-gradient-to-br from-black via-neutral-950 to-black" />
+            {/* Gradient Background */}
+            <div className="absolute inset-0 bg-background" />
             
             {/* Circuit Grid Pattern */}
             <div 

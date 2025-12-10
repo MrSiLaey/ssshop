@@ -108,7 +108,7 @@ export default function HomePage() {
                   <span className="text-gradient">Soft Stop Shop</span>
                 </h1>
 
-                <p className="text-lg text-zinc-400 max-w-xl">
+                <p className="text-lg text-muted-foreground max-w-xl">
                   ค้นพบสินค้าดิจิทัลและสินค้าจริงที่คุณต้องการ พร้อมระบบไลเซนส์อัตโนมัติ 
                   และการจัดส่งที่รวดเร็ว ทุกการซื้อมาพร้อมความปลอดภัย
                 </p>
@@ -131,16 +131,16 @@ export default function HomePage() {
                 {/* Stats */}
                 <div className="flex flex-wrap gap-8 pt-4">
                   <div>
-                    <p className="text-3xl font-bold text-amber-400">10K+</p>
-                    <p className="text-sm text-zinc-400">ลูกค้าที่ไว้วางใจ</p>
+                    <p className="text-3xl font-bold text-primary">10K+</p>
+                    <p className="text-sm text-muted-foreground">ลูกค้าที่ไว้วางใจ</p>
                   </div>
                   <div>
-                    <p className="text-3xl font-bold text-amber-400">500+</p>
-                    <p className="text-sm text-zinc-400">สินค้าคุณภาพ</p>
+                    <p className="text-3xl font-bold text-primary">500+</p>
+                    <p className="text-sm text-muted-foreground">สินค้าคุณภาพ</p>
                   </div>
                   <div>
-                    <p className="text-3xl font-bold text-amber-400">99%</p>
-                    <p className="text-sm text-zinc-400">ความพึงพอใจ</p>
+                    <p className="text-3xl font-bold text-primary">99%</p>
+                    <p className="text-sm text-muted-foreground">ความพึงพอใจ</p>
                   </div>
                 </div>
               </div>
@@ -176,28 +176,28 @@ export default function HomePage() {
 
                   {/* Floating Elements */}
                   <div className="absolute -top-4 -right-4 animate-float" style={{ animationDelay: '0.5s' }}>
-                    <Card variant="glass" className="p-4 border-amber-500/20">
+                    <Card variant="glass" className="p-4 border-primary/20">
                       <div className="flex items-center space-x-3">
-                        <div className="h-10 w-10 rounded-full bg-amber-500/20 flex items-center justify-center">
-                          <Key className="h-5 w-5 text-amber-400" />
+                        <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
+                          <Key className="h-5 w-5 text-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-white">License Activated</p>
-                          <p className="text-xs text-zinc-400">Just now</p>
+                          <p className="text-sm font-medium text-foreground">License Activated</p>
+                          <p className="text-xs text-muted-foreground">Just now</p>
                         </div>
                       </div>
                     </Card>
                   </div>
 
                   <div className="absolute -bottom-4 -left-4 animate-float" style={{ animationDelay: '1s' }}>
-                    <Card variant="glass" className="p-4 border-amber-500/20">
+                    <Card variant="glass" className="p-4 border-primary/20">
                       <div className="flex items-center space-x-3">
-                        <div className="h-10 w-10 rounded-full bg-yellow-500/20 flex items-center justify-center">
-                          <Download className="h-5 w-5 text-yellow-400" />
+                        <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
+                          <Download className="h-5 w-5 text-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-white">Download Ready</p>
-                          <p className="text-xs text-zinc-400">Premium Software</p>
+                          <p className="text-sm font-medium text-foreground">Download Ready</p>
+                          <p className="text-xs text-muted-foreground">Premium Software</p>
                         </div>
                       </div>
                     </Card>
@@ -214,16 +214,16 @@ export default function HomePage() {
         </section>
 
         {/* Features Section */}
-        <section className="py-20 border-y border-zinc-800">
+        <section className="py-20 border-y border-border">
           <div className="container mx-auto px-4">
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {features.map((feature, index) => (
                 <div key={index} className="text-center space-y-4">
-                  <div className="inline-flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500/20 to-yellow-600/20 border border-amber-500/20">
-                    <feature.icon className="h-6 w-6 text-amber-400" />
+                  <div className="inline-flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20">
+                    <feature.icon className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold text-white">{feature.title}</h3>
-                  <p className="text-sm text-zinc-400">{feature.description}</p>
+                  <h3 className="text-lg font-semibold text-foreground">{feature.title}</h3>
+                  <p className="text-sm text-muted-foreground">{feature.description}</p>
                 </div>
               ))}
             </div>
@@ -235,8 +235,8 @@ export default function HomePage() {
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between mb-12">
               <div>
-                <h2 className="text-3xl font-bold text-white mb-2">สินค้าแนะนำ</h2>
-                <p className="text-slate-400">คัดสรรสินค้าคุณภาพเพื่อคุณ</p>
+                <h2 className="text-3xl font-bold text-foreground mb-2">สินค้าแนะนำ</h2>
+                <p className="text-muted-foreground">คัดสรรสินค้าคุณภาพเพื่อคุณ</p>
               </div>
               <Link href="/shop">
                 <Button variant="ghost" className="group">
@@ -251,9 +251,9 @@ export default function HomePage() {
                 <Link key={product.id} href={`/shop/${product.slug}`}>
                   <Card variant="luxury" className="group overflow-hidden card-hover shine">
                     {/* Product Image */}
-                    <div className="aspect-square relative overflow-hidden bg-zinc-900">
+                    <div className="aspect-square relative overflow-hidden bg-muted">
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <ShoppingBag className="w-20 h-20 text-zinc-700 group-hover:text-amber-500/50 transition-colors" />
+                        <ShoppingBag className="w-20 h-20 text-muted-foreground/30 group-hover:text-primary/50 transition-colors" />
                       </div>
                       
                       {/* Badges */}
@@ -273,25 +273,25 @@ export default function HomePage() {
                     </div>
 
                     <CardContent className="p-4">
-                      <p className="text-xs text-amber-400 mb-1">{product.category}</p>
-                      <h3 className="font-semibold text-white group-hover:text-amber-400 transition-colors line-clamp-2 mb-2">
+                      <p className="text-xs text-primary mb-1">{product.category}</p>
+                      <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-2">
                         {product.name}
                       </h3>
                       
                       {/* Rating */}
                       <div className="flex items-center gap-2 mb-3">
                         <div className="flex items-center">
-                          <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                          <span className="text-sm text-white ml-1">{product.rating}</span>
+                          <Star className="w-4 h-4 text-primary fill-primary" />
+                          <span className="text-sm text-foreground ml-1">{product.rating}</span>
                         </div>
-                        <span className="text-xs text-zinc-500">({product.reviewCount})</span>
+                        <span className="text-xs text-muted-foreground">({product.reviewCount})</span>
                       </div>
 
                       {/* Price */}
                       <div className="flex items-center gap-2">
-                        <span className="text-lg font-bold text-amber-400">฿{product.price.toLocaleString()}</span>
+                        <span className="text-lg font-bold text-primary">฿{product.price.toLocaleString()}</span>
                         {product.comparePrice && (
-                          <span className="text-sm text-zinc-500 line-through">
+                          <span className="text-sm text-muted-foreground line-through">
                             ฿{product.comparePrice.toLocaleString()}
                           </span>
                         )}
@@ -308,12 +308,12 @@ export default function HomePage() {
         <section className="py-20">
           <div className="container mx-auto px-4">
             <Card variant="luxury" className="relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 via-yellow-500/10 to-amber-600/10" />
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10" />
               <div className="relative p-8 md:p-12 lg:p-16 text-center">
-                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
                   พร้อมเริ่มต้นแล้วหรือยัง?
                 </h2>
-                <p className="text-lg text-zinc-300 mb-8 max-w-2xl mx-auto">
+                <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
                   สมัครสมาชิกวันนี้ รับส่วนลดพิเศษทันที 10% สำหรับการสั่งซื้อครั้งแรก
                 </p>
                 <div className="flex flex-wrap justify-center gap-4">

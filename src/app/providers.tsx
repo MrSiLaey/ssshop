@@ -1,6 +1,7 @@
 'use client'
 
 import { SessionProvider } from 'next-auth/react'
+import { ThemeProvider } from 'next-themes'
 import { ReactNode, useEffect } from 'react'
 import { useNotificationStore, Notification } from '@/stores'
 import { X, CheckCircle, AlertCircle, AlertTriangle, Info } from 'lucide-react'
@@ -65,8 +66,16 @@ function NotificationContainer() {
 export function Providers({ children }: ProvidersProps) {
   return (
     <SessionProvider>
-      {children}
-      <NotificationContainer />
+      <ThemeProvider 
+        attribute="class" 
+        defaultTheme="light" 
+        enableSystem={false}
+        storageKey="ssshop-theme"
+        disableTransitionOnChange
+      >
+        {children}
+        <NotificationContainer />
+      </ThemeProvider>
     </SessionProvider>
   )
 }

@@ -23,11 +23,11 @@ export default function CartPage() {
     return (
       <>
         <Header />
-        <main className="min-h-screen pt-16 flex items-center justify-center">
+        <main className="min-h-screen pt-16 flex items-center justify-center bg-background">
           <div className="text-center">
-            <ShoppingCart className="w-24 h-24 text-stone-600 mx-auto mb-6" />
-            <h1 className="text-3xl font-bold text-white mb-4">ตะกร้าว่างเปล่า</h1>
-            <p className="text-slate-400 mb-8">ยังไม่มีสินค้าในตะกร้าของคุณ</p>
+            <ShoppingCart className="w-24 h-24 text-muted-foreground mx-auto mb-6" />
+            <h1 className="text-3xl font-bold text-foreground mb-4">ตะกร้าว่างเปล่า</h1>
+            <p className="text-muted-foreground mb-8">ยังไม่มีสินค้าในตะกร้าของคุณ</p>
             <Link href="/shop">
               <Button variant="gold">
                 <ShoppingBag className="w-5 h-5 mr-2" />
@@ -44,9 +44,9 @@ export default function CartPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen pt-16">
+      <main className="min-h-screen pt-16 bg-background">
         <div className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold text-white mb-8">ตะกร้าสินค้า</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-8">ตะกร้าสินค้า</h1>
 
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Cart Items */}
@@ -55,7 +55,7 @@ export default function CartPage() {
                 <Card key={item.productId} variant="glass" className="p-6">
                   <div className="flex gap-6">
                     {/* Product Image */}
-                    <div className="w-24 h-24 rounded-lg bg-stone-800 shrink-0 flex items-center justify-center overflow-hidden">
+                    <div className="w-24 h-24 rounded-lg bg-muted shrink-0 flex items-center justify-center overflow-hidden">
                       {item.image ? (
                         <img
                           src={item.image}
@@ -63,9 +63,9 @@ export default function CartPage() {
                           className="w-full h-full object-cover"
                         />
                       ) : item.isDigital ? (
-                        <Download className="w-8 h-8 text-amber-500/50" />
+                        <Download className="w-8 h-8 text-primary/50" />
                       ) : (
-                        <Package className="w-8 h-8 text-stone-600" />
+                        <Package className="w-8 h-8 text-muted-foreground" />
                       )}
                     </div>
 
@@ -73,7 +73,7 @@ export default function CartPage() {
                     <div className="flex-1">
                       <div className="flex items-start justify-between mb-2">
                         <div>
-                          <h3 className="font-semibold text-white mb-1">{item.name}</h3>
+                          <h3 className="font-semibold text-foreground mb-1">{item.name}</h3>
                           {item.isDigital && (
                             <Badge variant="gold" className="text-xs">
                               <Download className="w-3 h-3 mr-1" />
@@ -84,7 +84,7 @@ export default function CartPage() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="text-slate-400 hover:text-zinc-300"
+                          className="text-muted-foreground hover:text-foreground"
                           onClick={() => removeItem(item.productId)}
                         >
                           <Trash2 className="w-4 h-4" />
@@ -94,7 +94,7 @@ export default function CartPage() {
                       <div className="flex items-center justify-between mt-4">
                         {/* Quantity Controls */}
                         {!item.isDigital ? (
-                          <div className="flex items-center border border-stone-700 rounded-lg">
+                          <div className="flex items-center border border-border rounded-lg">
                             <Button
                               variant="ghost"
                               size="icon"
@@ -104,7 +104,7 @@ export default function CartPage() {
                             >
                               <Minus className="w-3 h-3" />
                             </Button>
-                            <span className="w-10 text-center text-white text-sm">
+                            <span className="w-10 text-center text-foreground text-sm">
                               {item.quantity}
                             </span>
                             <Button
@@ -117,16 +117,16 @@ export default function CartPage() {
                             </Button>
                           </div>
                         ) : (
-                          <span className="text-sm text-slate-400">จำนวน: 1</span>
+                          <span className="text-sm text-muted-foreground">จำนวน: 1</span>
                         )}
 
                         {/* Price */}
                         <div className="text-right">
-                          <p className="text-lg font-bold text-amber-400">
+                          <p className="text-lg font-bold text-primary">
                             {formatCurrency(item.price * item.quantity)}
                           </p>
                           {item.quantity > 1 && (
-                            <p className="text-xs text-slate-500">
+                            <p className="text-xs text-muted-foreground">
                               {formatCurrency(item.price)} x {item.quantity}
                             </p>
                           )}
@@ -139,7 +139,7 @@ export default function CartPage() {
 
               {/* Clear Cart */}
               <div className="flex justify-end">
-                <Button variant="ghost" className="text-slate-400" onClick={clearCart}>
+                <Button variant="ghost" className="text-muted-foreground" onClick={clearCart}>
                   <Trash2 className="w-4 h-4 mr-2" />
                   ล้างตะกร้า
                 </Button>
@@ -149,22 +149,22 @@ export default function CartPage() {
             {/* Order Summary */}
             <div className="lg:col-span-1">
               <Card variant="glass" className="p-6 sticky top-24">
-                <h2 className="text-xl font-bold text-white mb-6">สรุปคำสั่งซื้อ</h2>
+                <h2 className="text-xl font-bold text-foreground mb-6">สรุปคำสั่งซื้อ</h2>
 
                 <div className="space-y-4 mb-6">
-                  <div className="flex justify-between text-slate-400">
+                  <div className="flex justify-between text-muted-foreground">
                     <span>รวมสินค้า ({items.length} รายการ)</span>
                     <span>{formatCurrency(total)}</span>
                   </div>
-                  <div className="flex justify-between text-slate-400">
+                  <div className="flex justify-between text-muted-foreground">
                     <span>ค่าจัดส่ง</span>
-                    <span className="text-amber-400">ฟรี</span>
+                    <span className="text-primary">ฟรี</span>
                   </div>
                 </div>
 
                 {/* Coupon Code */}
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                  <label className="block text-sm font-medium text-muted-foreground mb-2">
                     โค้ดส่วนลด
                   </label>
                   <div className="flex gap-2">
@@ -173,10 +173,10 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                <div className="border-t border-stone-800 pt-4 mb-6">
+                <div className="border-t border-border pt-4 mb-6">
                   <div className="flex justify-between items-center">
-                    <span className="text-lg font-semibold text-white">ยอดรวมทั้งหมด</span>
-                    <span className="text-2xl font-bold text-amber-400">{formatCurrency(total)}</span>
+                    <span className="text-lg font-semibold text-foreground">ยอดรวมทั้งหมด</span>
+                    <span className="text-2xl font-bold text-primary">{formatCurrency(total)}</span>
                   </div>
                 </div>
 
@@ -187,7 +187,7 @@ export default function CartPage() {
                   </Button>
                 </Link>
 
-                <p className="text-xs text-slate-500 text-center mt-4">
+                <p className="text-xs text-muted-foreground text-center mt-4">
                   การชำระเงินมีความปลอดภัยด้วย SSL encryption
                 </p>
               </Card>
