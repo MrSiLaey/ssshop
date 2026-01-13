@@ -9,7 +9,12 @@ function resolveMetadataBase(): URL {
     process.env.NEXTAUTH_URL ||
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined)
 
-  const raw = fromEnv || 'http://localhost:3000'
+  const fallback =
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3000'
+      : 'https://softstopshop.com'
+
+  const raw = fromEnv || fallback
   const withProtocol = raw.startsWith('http://') || raw.startsWith('https://') ? raw : `https://${raw}`
   return new URL(withProtocol)
 }
