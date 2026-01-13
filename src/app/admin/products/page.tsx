@@ -1,105 +1,70 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { 
   Plus, 
   Search, 
-  Filter, 
   Edit, 
   Trash2, 
   Eye,
   Download,
   Package,
-  MoreHorizontal
 } from 'lucide-react'
 import { Card, Badge, Button, Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui'
 import { formatCurrency } from '@/lib/utils'
 
-// Mock data
-const products = [
-  {
-    id: '1',
-    name: 'Premium Software License',
-    slug: 'premium-software-license',
-    sku: 'PSL-001',
-    price: 2990,
-    stock: 999,
-    category: 'Software',
-    type: 'DIGITAL',
-    status: 'ACTIVE',
-    sales: 156,
-  },
-  {
-    id: '2',
-    name: 'Developer Toolkit Pro',
-    slug: 'developer-toolkit-pro',
-    sku: 'DTP-001',
-    price: 1490,
-    stock: 999,
-    category: 'Development',
-    type: 'DIGITAL',
-    status: 'ACTIVE',
-    sales: 98,
-  },
-  {
-    id: '3',
-    name: 'Wireless Keyboard RGB',
-    slug: 'wireless-keyboard-rgb',
-    sku: 'WKR-001',
-    price: 2490,
-    stock: 45,
-    category: 'Hardware',
-    type: 'PHYSICAL',
-    status: 'ACTIVE',
-    sales: 87,
-  },
-  {
-    id: '4',
-    name: 'Gaming Mouse Pro',
-    slug: 'gaming-mouse-pro',
-    sku: 'GMP-001',
-    price: 1890,
-    stock: 32,
-    category: 'Hardware',
-    type: 'PHYSICAL',
-    status: 'ACTIVE',
-    sales: 76,
-  },
-  {
-    id: '5',
-    name: 'Cloud Storage 1TB License',
-    slug: 'cloud-storage-1tb-license',
-    sku: 'CSL-001',
-    price: 990,
-    stock: 999,
-    category: 'Software',
-    type: 'DIGITAL',
-    status: 'DRAFT',
-    sales: 0,
-  },
-]
+interface Product {
+  id: string
+  name: string
+  slug: string
+  sku: string | null
+  price: number
+  stock: number
+  category: { name: string } | null
+  productType: string
+  isActive: boolean
+  _count: { orderItems: number }
+}
 
 const statusConfig = {
-  ACTIVE: { label: 'เปิดขาย', variant: 'success' as const },
-  DRAFT: { label: 'แบบร่าง', variant: 'secondary' as const },
-  ARCHIVED: { label: 'เก็บถาวร', variant: 'destructive' as const },
+  true: { label: 'เปิดขาย', variant: 'success' as const },
+  false: { label: 'ปิดขาย', variant: 'secondary' as const },
 }
 
 export default function AdminProductsPage() {
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [typeFilter, setTypeFilter] = useState('all')
   const [statusFilter, setStatusFilter] = useState('all')
   const [selectedProducts, setSelectedProducts] = useState<string[]>([])
 
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const res = await fetch('/api/products?limit=100')
+        if (res.ok) {
+          const data = await res.json()
+          setProducts(data.products || [])
+        }
+      } catch (error) {
+        console.error('Failed to fetch products:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchProducts()
+  }, [])
+
   const filteredProducts = products.filter((product) => {
     if (searchQuery && !product.name.toLowerCase().includes(searchQuery.toLowerCase())) {
       return false
     }
-    if (typeFilter !== 'all' && product.type !== typeFilter) {
+    if (typeFilter !== 'all' && product.productType !== typeFilter) {
       return false
     }
-    if (statusFilter !== 'all' && product.status !== statusFilter) {
+    if (statusFilter !== 'all' && String(product.isActive) !== statusFilter) {
       return false
     }
     return true
@@ -119,22 +84,48 @@ export default function AdminProductsPage() {
     }
   }
 
-  return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500 text-transparent bg-clip-text mb-2">สินค้า</h1>
-          <p className="text-muted-foreground">จัดการสินค้าทั้งหมดในร้านค้า</p>
+  const handleDelete = async (id: string) => {
+    if (!confirm('คุณแน่ใจหรือไม่ที่จะลบสินค้านี้?')) return
+    
+    try {
+      const res = await fetch(`/api/products/${id}`, { method: 'DELETE' })
+      if (res.ok) {
+        setProducts(products.filter(p => p.id !== id))
+      }
+    } catch (error) {
+      console.error('Failed to delete product:', error)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="text-center py-20">
+          <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4" />
+          <p className="text-muted-foreground">กำลังโหลด...</p>
         </div>
-        <Button className="bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-white">
-          <Plus className="w-4 h-4 mr-2" />
-          เพิ่มสินค้าใหม่
-        </Button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="p-6">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">จัดการสินค้า</h1>
+          <p className="text-muted-foreground">จัดการสินค้าทั้งหมดในระบบ ({products.length} รายการ)</p>
+        </div>
+        <Link href="/admin/products/create">
+          <Button variant="neon">
+            <Plus className="w-4 h-4 mr-2" />
+            เพิ่มสินค้า
+          </Button>
+        </Link>
       </div>
 
       {/* Filters */}
-      <Card variant="glass" className="p-4 border-amber-500/20">
+      <Card variant="glass" className="p-4 mb-6">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
             <Input
@@ -160,127 +151,136 @@ export default function AdminProductsPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">ทุกสถานะ</SelectItem>
-              <SelectItem value="ACTIVE">เปิดขาย</SelectItem>
-              <SelectItem value="DRAFT">แบบร่าง</SelectItem>
-              <SelectItem value="ARCHIVED">เก็บถาวร</SelectItem>
+              <SelectItem value="true">เปิดขาย</SelectItem>
+              <SelectItem value="false">ปิดขาย</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </Card>
 
       {/* Products Table */}
-      <Card variant="glass" className="overflow-hidden border-amber-500/20">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="text-left text-sm text-muted-foreground bg-muted/50">
-                <th className="p-4">
-                  <input
-                    type="checkbox"
-                    checked={selectedProducts.length === filteredProducts.length && filteredProducts.length > 0}
-                    onChange={toggleSelectAll}
-                    className="w-4 h-4 rounded border-border bg-background text-amber-500 focus:ring-amber-500"
-                  />
-                </th>
-                <th className="p-4 font-medium">สินค้า</th>
-                <th className="p-4 font-medium">SKU</th>
-                <th className="p-4 font-medium">ราคา</th>
-                <th className="p-4 font-medium">คลัง</th>
-                <th className="p-4 font-medium">ประเภท</th>
-                <th className="p-4 font-medium">สถานะ</th>
-                <th className="p-4 font-medium">ขาย</th>
-                <th className="p-4 font-medium"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredProducts.map((product) => {
-                const status = statusConfig[product.status as keyof typeof statusConfig]
-                return (
-                  <tr key={product.id} className="border-t border-border/50 hover:bg-muted/30 transition-colors">
-                    <td className="p-4">
-                      <input
-                        type="checkbox"
-                        checked={selectedProducts.includes(product.id)}
-                        onChange={() => toggleSelect(product.id)}
-                        className="w-4 h-4 rounded border-border bg-background text-amber-500 focus:ring-amber-500"
-                      />
-                    </td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                          product.type === 'DIGITAL' 
-                            ? 'bg-gradient-to-br from-yellow-500/20 to-amber-500/20' 
-                            : 'bg-muted'
-                        }`}>
-                          {product.type === 'DIGITAL' ? (
-                            <Download className="w-5 h-5 text-amber-500" />
-                          ) : (
+      {filteredProducts.length > 0 ? (
+        <Card variant="glass" className="overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left p-4">
+                    <input
+                      type="checkbox"
+                      checked={selectedProducts.length === filteredProducts.length}
+                      onChange={toggleSelectAll}
+                      className="rounded border-border"
+                    />
+                  </th>
+                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">สินค้า</th>
+                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">SKU</th>
+                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">ราคา</th>
+                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">คลัง</th>
+                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">หมวดหมู่</th>
+                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">ประเภท</th>
+                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">สถานะ</th>
+                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">ยอดขาย</th>
+                  <th className="text-right p-4 text-sm font-medium text-muted-foreground">การดำเนินการ</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredProducts.map((product) => {
+                  const status = statusConfig[String(product.isActive) as keyof typeof statusConfig]
+                  return (
+                    <tr key={product.id} className="border-b border-border/50 hover:bg-muted/50">
+                      <td className="p-4">
+                        <input
+                          type="checkbox"
+                          checked={selectedProducts.includes(product.id)}
+                          onChange={() => toggleSelect(product.id)}
+                          className="rounded border-border"
+                        />
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded bg-muted flex items-center justify-center">
                             <Package className="w-5 h-5 text-muted-foreground" />
+                          </div>
+                          <div>
+                            <p className="font-medium text-foreground">{product.name}</p>
+                            <p className="text-xs text-muted-foreground">{product.slug}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="p-4 text-sm text-muted-foreground font-mono">
+                        {product.sku || '-'}
+                      </td>
+                      <td className="p-4 text-sm text-foreground font-medium">
+                        {formatCurrency(Number(product.price))}
+                      </td>
+                      <td className="p-4 text-sm text-muted-foreground">
+                        {product.stock}
+                      </td>
+                      <td className="p-4 text-sm text-muted-foreground">
+                        {product.category?.name || '-'}
+                      </td>
+                      <td className="p-4">
+                        <Badge variant={product.productType === 'DIGITAL' ? 'info' : 'secondary'}>
+                          {product.productType === 'DIGITAL' ? (
+                            <><Download className="w-3 h-3 mr-1" /> ดิจิทัล</>
+                          ) : (
+                            <><Package className="w-3 h-3 mr-1" /> จัดส่ง</>
                           )}
+                        </Badge>
+                      </td>
+                      <td className="p-4">
+                        <Badge variant={status.variant}>{status.label}</Badge>
+                      </td>
+                      <td className="p-4 text-sm text-muted-foreground">
+                        {product._count?.orderItems || 0}
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center justify-end gap-2">
+                          <Link href={`/shop/${product.slug}`}>
+                            <Button variant="ghost" size="sm">
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                          </Link>
+                          <Link href={`/admin/products/${product.id}/edit`}>
+                            <Button variant="ghost" size="sm">
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                          </Link>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => handleDelete(product.id)}
+                          >
+                            <Trash2 className="w-4 h-4 text-red-500" />
+                          </Button>
                         </div>
-                        <div>
-                          <p className="font-medium text-foreground">{product.name}</p>
-                          <p className="text-sm text-muted-foreground">{product.category}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <span className="font-mono text-muted-foreground">{product.sku}</span>
-                    </td>
-                    <td className="p-4">
-                      <span className="font-medium text-amber-500">{formatCurrency(product.price)}</span>
-                    </td>
-                    <td className="p-4">
-                      <span className={`${
-                        product.stock < 10 ? 'text-amber-500' :
-                        product.stock < 50 ? 'text-yellow-500' :
-                        'text-muted-foreground'
-                      }`}>
-                        {product.stock === 999 ? '∞' : product.stock}
-                      </span>
-                    </td>
-                    <td className="p-4">
-                      <Badge variant={product.type === 'DIGITAL' ? 'gold' : 'secondary'}>
-                        {product.type === 'DIGITAL' ? 'ดิจิทัล' : 'จัดส่ง'}
-                      </Badge>
-                    </td>
-                    <td className="p-4">
-                      <Badge variant={status.variant}>{status.label}</Badge>
-                    </td>
-                    <td className="p-4">
-                      <span className="text-muted-foreground">{product.sales}</span>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="icon" className="text-amber-500 hover:text-amber-400 hover:bg-amber-500/10">
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground hover:bg-muted">
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        <div className="flex items-center justify-between p-4 border-t border-border">
-          <p className="text-sm text-muted-foreground">
-            แสดง {filteredProducts.length} จาก {products.length} รายการ
-          </p>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" disabled className="border-border">ก่อนหน้า</Button>
-            <Button variant="outline" size="sm" disabled className="border-border">ถัดไป</Button>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
           </div>
-        </div>
-      </Card>
+        </Card>
+      ) : (
+        <Card variant="glass" className="p-12 text-center">
+          <Package className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-xl font-semibold text-foreground mb-2">ไม่พบสินค้า</h3>
+          <p className="text-muted-foreground mb-6">
+            {searchQuery || typeFilter !== 'all' || statusFilter !== 'all'
+              ? 'ลองปรับตัวกรองหรือค้นหาด้วยคำอื่น'
+              : 'เริ่มต้นเพิ่มสินค้าแรกของคุณ'
+            }
+          </p>
+          <Link href="/admin/products/create">
+            <Button variant="neon">
+              <Plus className="w-4 h-4 mr-2" />
+              เพิ่มสินค้า
+            </Button>
+          </Link>
+        </Card>
+      )}
     </div>
   )
 }

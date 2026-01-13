@@ -510,3 +510,116 @@ model Setting {
 
   @@map("settings")
 }
+
+// ==================== SPIN WHEEL ====================
+
+model SpinWheel {
+  id            String   @id @default(cuid())
+  name          String
+  description   String?
+  isActive      Boolean  @default(true)
+  
+  // Settings
+  spinsPerDay   Int      @default(1)  // จำนวนครั้งที่หมุนได้ต่อวัน
+  cooldownHours Int      @default(24) // ระยะเวลารอหมุนใหม่
+  showOnPopup   Boolean  @default(true)
+  popupDelay    Int      @default(3)  // แสดง popup หลังเข้าเว็บกี่วินาที
+  
+  // Design
+  backgroundColor String? @default("#000000")
+  textColor       String? @default("#ffffff")
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  prizes        SpinPrize[]
+  spins         SpinHistory[]
+
+  @@map("spin_wheels")
+}
+
+model SpinPrize {
+  id            String    @id @default(cuid())
+  wheelId       String
+  
+  // Prize Details
+  name          String
+  description   String?
+  type          PrizeType @default(DISCOUNT_FIXED)
+  
+  // Value
+  value         Decimal   @db.Decimal(10, 2) // จำนวนเงิน/เปอร์เซ็นต์
+  maxValue      Decimal?  @db.Decimal(10, 2) // ส่วนลดสูงสุด (สำหรับ percentage)
+  
+  // Design
+  color         String    @default("#FF6B00") // สีในวงล้อ
+  textColor     String    @default("#FFFFFF")
+  icon          String?
+  
+  // Probability
+  probability   Decimal   @db.Decimal(5, 2)   // เปอร์เซ็นต์โอกาสถูก (0-100)
+  
+  // Limits
+  totalQuantity Int?      // จำนวนรางวัลทั้งหมด (null = ไม่จำกัด)
+  wonCount      Int       @default(0) // จำนวนที่ถูกไปแล้ว
+  dailyLimit    Int?      // จำกัดจำนวนต่อวัน
+  
+  // Validity
+  validDays     Int       @default(7) // คูปองใช้ได้กี่วัน
+  minPurchase   Decimal?  @db.Decimal(10, 2) // ยอดขั้นต่ำในการใช้
+  
+  isActive      Boolean   @default(true)
+  position      Int       @default(0) // ลำดับในวงล้อ
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  wheel         SpinWheel @relation(fields: [wheelId], references: [id], onDelete: Cascade)
+  spins         SpinHistory[]
+
+  @@index([wheelId])
+  @@map("spin_prizes")
+}
+
+model SpinHistory {
+  id            String   @id @default(cuid())
+  wheelId       String
+  prizeId       String?
+  userId        String?
+  sessionId     String?  // สำหรับ guest user
+  
+  // Result
+  isWin         Boolean  @default(false)
+  
+  // Coupon Generated
+  couponCode    String?  @unique
+  couponUsed    Boolean  @default(false)
+  couponExpiresAt DateTime?
+  
+  // Metadata
+  ipAddress     String?
+  userAgent     String?
+  
+  createdAt     DateTime @default(now())
+
+  // Relations
+  wheel         SpinWheel  @relation(fields: [wheelId], references: [id], onDelete: Cascade)
+  prize         SpinPrize? @relation(fields: [prizeId], references: [id])
+
+  @@index([userId])
+  @@index([sessionId])
+  @@index([couponCode])
+  @@map("spin_history")
+}
+
+enum PrizeType {
+  DISCOUNT_FIXED    // ส่วนลดเงินสด เช่น ฿100
+  DISCOUNT_PERCENT  // ส่วนลดเปอร์เซ็นต์ เช่น 10%
+  FREE_SHIPPING     // ส่งฟรี
+  CASHBACK          // เงินคืน
+  POINTS            // แต้มสะสม
+  COUPON            // คูปองพิเศษ
+  NO_PRIZE          // เสียใจด้วย/ลองใหม่
+}

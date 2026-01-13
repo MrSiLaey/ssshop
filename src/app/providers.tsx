@@ -5,6 +5,7 @@ import { ThemeProvider } from 'next-themes'
 import { ReactNode, useEffect } from 'react'
 import { useNotificationStore, Notification } from '@/stores'
 import { X, CheckCircle, AlertCircle, AlertTriangle, Info } from 'lucide-react'
+import { SpinWheelPopup } from '@/components/spin-wheel'
 
 interface ProvidersProps {
   children: ReactNode
@@ -32,7 +33,7 @@ function NotificationToast({ notification }: { notification: Notification }) {
 
   return (
     <div className={`flex items-start gap-3 p-4 rounded-lg border backdrop-blur-sm ${colors[notification.type]} animate-in slide-in-from-right`}>
-      <Icon className="w-5 h-5 flex-shrink-0 mt-0.5" />
+      <Icon className="w-5 h-5 shrink-0 mt-0.5" />
       <div className="flex-1 min-w-0">
         <p className="font-medium text-white">{notification.title}</p>
         {notification.message && (
@@ -41,7 +42,7 @@ function NotificationToast({ notification }: { notification: Notification }) {
       </div>
       <button
         onClick={() => removeNotification(notification.id)}
-        className="flex-shrink-0 opacity-60 hover:opacity-100 transition-opacity"
+        className="shrink-0 opacity-60 hover:opacity-100 transition-opacity"
       >
         <X className="w-4 h-4" />
       </button>
@@ -55,7 +56,7 @@ function NotificationContainer() {
   if (notifications.length === 0) return null
 
   return (
-    <div className="fixed bottom-4 right-4 z-[100] flex flex-col gap-2 max-w-sm w-full">
+    <div className="fixed bottom-4 right-4 z-100 flex flex-col gap-2 max-w-sm w-full">
       {notifications.map((notification) => (
         <NotificationToast key={notification.id} notification={notification} />
       ))}
@@ -75,6 +76,7 @@ export function Providers({ children }: ProvidersProps) {
       >
         {children}
         <NotificationContainer />
+        <SpinWheelPopup />
       </ThemeProvider>
     </SessionProvider>
   )

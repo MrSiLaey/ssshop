@@ -75,8 +75,37 @@ export async function GET(req: NextRequest) {
       prisma.licenseKey.count({ where }),
     ])
 
+    // For non-admin users, return simplified format for dashboard
+    if (session.user.role !== 'ADMIN') {
+      const simplifiedLicenses = licenses.map(license => ({
+        id: license.id,
+        productName: license.product.name,
+        key: license.key,
+        status: license.status,
+        createdAt: license.createdAt.toISOString().split('T')[0],
+        expiresAt: license.expiresAt?.toISOString().split('T')[0] || null,
+        activations: license.activations.length,
+        maxActivations: license.activationsLimit,
+      }))
+      return NextResponse.json(simplifiedLicenses)
+    }
+
+    // Transform for admin with consistent field names
+    const transformedLicenses = licenses.map(license => ({
+      id: license.id,
+      licenseKey: license.key,
+      product: license.product,
+      user: license.user,
+      order: license.order,
+      status: license.status,
+      createdAt: license.createdAt.toISOString(),
+      expiresAt: license.expiresAt?.toISOString() || null,
+      activations: license.activations,
+      maxActivations: license.activationsLimit,
+    }))
+
     return NextResponse.json({
-      licenses,
+      licenses: transformedLicenses,
       pagination: {
         page,
         limit,

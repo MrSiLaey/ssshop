@@ -1,172 +1,164 @@
-'use client'
-
-import { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
 import { 
-  Search, 
-  Filter, 
   ShoppingBag, 
   Download, 
-  Star, 
-  Grid, 
-  List,
-  SlidersHorizontal,
-  X
+  Star
 } from 'lucide-react'
 import { Header, Footer } from '@/components/layout'
-import { 
-  Button, 
-  Card, 
-  CardContent, 
-  Badge, 
-  Input,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue 
-} from '@/components/ui'
-import { useProductFilterStore } from '@/stores'
+import { Button, Card, CardContent, Badge } from '@/components/ui'
+import prisma from '@/lib/db'
 import { formatCurrency } from '@/lib/utils'
 
-// Mock products data
-const mockProducts = [
-  {
-    id: '1',
-    name: 'Premium Software License',
-    slug: 'premium-software-license',
-    price: 2990,
-    comparePrice: 3990,
-    category: { name: 'Software', slug: 'software' },
-    productType: 'DIGITAL',
-    thumbnail: null,
-    rating: 4.8,
-    reviewCount: 124,
-  },
-  {
-    id: '2',
-    name: 'Developer Toolkit Pro',
-    slug: 'developer-toolkit-pro',
-    price: 1490,
-    category: { name: 'Development', slug: 'development' },
-    productType: 'DIGITAL',
-    thumbnail: null,
-    rating: 4.9,
-    reviewCount: 89,
-  },
-  {
-    id: '3',
-    name: 'Wireless Keyboard RGB',
-    slug: 'wireless-keyboard-rgb',
-    price: 2490,
-    comparePrice: 2990,
-    category: { name: 'Hardware', slug: 'hardware' },
-    productType: 'PHYSICAL',
-    thumbnail: null,
-    rating: 4.7,
-    reviewCount: 256,
-  },
-  {
-    id: '4',
-    name: 'Gaming Mouse Pro',
-    slug: 'gaming-mouse-pro',
-    price: 1890,
-    category: { name: 'Hardware', slug: 'hardware' },
-    productType: 'PHYSICAL',
-    thumbnail: null,
-    rating: 4.6,
-    reviewCount: 178,
-  },
-  {
-    id: '5',
-    name: 'Cloud Storage 1TB License',
-    slug: 'cloud-storage-1tb-license',
-    price: 990,
-    category: { name: 'Software', slug: 'software' },
-    productType: 'DIGITAL',
-    thumbnail: null,
-    rating: 4.5,
-    reviewCount: 312,
-  },
-  {
-    id: '6',
-    name: 'Mechanical Keyboard TKL',
-    slug: 'mechanical-keyboard-tkl',
-    price: 3490,
-    category: { name: 'Hardware', slug: 'hardware' },
-    productType: 'PHYSICAL',
-    thumbnail: null,
-    rating: 4.9,
-    reviewCount: 156,
-  },
-]
+interface PageProps {
+  searchParams: Promise<{
+    type?: string
+    category?: string
+    search?: string
+    sortBy?: string
+    sortOrder?: string
+    page?: string
+  }>
+}
 
-const categories = [
-  { name: 'ทั้งหมด', slug: '' },
-  { name: 'Software', slug: 'software' },
-  { name: 'Development', slug: 'development' },
-  { name: 'Hardware', slug: 'hardware' },
-]
+async function getProducts(searchParams: {
+  type?: string
+  category?: string
+  search?: string
+  sortBy?: string
+  sortOrder?: string
+  page?: string
+}) {
+  const page = parseInt(searchParams.page || '1')
+  const limit = 12
+  const skip = (page - 1) * limit
 
-function ShopContent() {
-  const searchParams = useSearchParams()
-  const typeFromUrl = searchParams.get('type')
-  
-  const { filters, setCategory, setSearch, setType, setSort, resetFilters } = useProductFilterStore()
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-  const [showFilters, setShowFilters] = useState(false)
+  // Build where clause
+  const where: any = {
+    isActive: true,
+  }
 
-  // Set type from URL
-  useEffect(() => {
-    if (typeFromUrl === 'DIGITAL' || typeFromUrl === 'PHYSICAL') {
-      setType(typeFromUrl)
-    }
-  }, [typeFromUrl, setType])
+  if (searchParams.type && searchParams.type !== 'ALL') {
+    where.productType = searchParams.type
+  }
 
-  // Filter products
-  const filteredProducts = mockProducts.filter((product) => {
-    // Type filter
-    if (filters.type !== 'ALL' && product.productType !== filters.type) {
-      return false
-    }
+  if (searchParams.category) {
+    where.category = { slug: searchParams.category }
+  }
 
-    // Category filter
-    if (filters.category && product.category.slug !== filters.category) {
-      return false
-    }
+  if (searchParams.search) {
+    where.OR = [
+      { name: { contains: searchParams.search } },
+      { description: { contains: searchParams.search } },
+    ]
+  }
 
-    // Search filter
-    if (filters.search) {
-      const searchLower = filters.search.toLowerCase()
-      if (!product.name.toLowerCase().includes(searchLower)) {
-        return false
+  const sortBy = searchParams.sortBy || 'createdAt'
+  const sortOrder = searchParams.sortOrder || 'desc'
+
+  const [products, total] = await Promise.all([
+    prisma.product.findMany({
+      where,
+      include: {
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
+        _count: {
+          select: {
+            reviews: true,
+          },
+        },
+      },
+      orderBy: {
+        [sortBy]: sortOrder,
+      },
+      skip,
+      take: limit,
+    }),
+    prisma.product.count({ where }),
+  ])
+
+  // Get ratings for each product
+  const productsWithRating = await Promise.all(
+    products.map(async (product) => {
+      const avgRating = await prisma.review.aggregate({
+        where: { productId: product.id, isApproved: true },
+        _avg: { rating: true },
+      })
+      return {
+        ...product,
+        rating: avgRating._avg.rating || 0,
+        reviewCount: product._count.reviews,
       }
-    }
+    })
+  )
 
-    // Price filter
-    if (filters.minPrice && product.price < filters.minPrice) {
-      return false
-    }
-    if (filters.maxPrice && product.price > filters.maxPrice) {
-      return false
-    }
+  return {
+    products: productsWithRating,
+    total,
+    page,
+    totalPages: Math.ceil(total / limit),
+  }
+}
 
-    return true
+async function getCategories() {
+  return prisma.productCategory.findMany({
+    where: { isActive: true },
+    orderBy: { name: 'asc' },
   })
+}
 
-  // Sort products
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
-    if (filters.sortBy === 'price') {
-      return filters.sortOrder === 'asc' ? a.price - b.price : b.price - a.price
-    }
-    if (filters.sortBy === 'name') {
-      return filters.sortOrder === 'asc' 
-        ? a.name.localeCompare(b.name) 
-        : b.name.localeCompare(a.name)
-    }
-    return 0
-  })
+// Color classes for categories
+const getCategoryColor = (slug: string) => {
+  const colors: Record<string, string> = {
+    'software': 'purple',
+    'digital-art': 'pink',
+    'ebooks': 'cyan',
+    'templates': 'orange',
+    'courses': 'green',
+    'games': 'blue',
+  }
+  return colors[slug] || 'purple'
+}
+
+const getColorClasses = (color: string) => {
+  const colors: Record<string, { text: string; badge: string }> = {
+    purple: { text: 'text-purple-500', badge: 'bg-purple-500/20 text-purple-400' },
+    cyan: { text: 'text-cyan-500', badge: 'bg-cyan-500/20 text-cyan-400' },
+    pink: { text: 'text-pink-500', badge: 'bg-pink-500/20 text-pink-400' },
+    green: { text: 'text-green-500', badge: 'bg-green-500/20 text-green-400' },
+    orange: { text: 'text-orange-500', badge: 'bg-orange-500/20 text-orange-400' },
+    blue: { text: 'text-blue-500', badge: 'bg-blue-500/20 text-blue-400' },
+  }
+  return colors[color] || colors.purple
+}
+
+export default async function ShopPage({ searchParams }: PageProps) {
+  const params = await searchParams
+  const [{ products, total, page, totalPages }, categories] = await Promise.all([
+    getProducts(params),
+    getCategories(),
+  ])
+
+  const currentType = params.type || 'ALL'
+  const currentCategory = params.category || ''
+  const currentSearch = params.search || ''
+  const currentSort = `${params.sortBy || 'createdAt'}-${params.sortOrder || 'desc'}`
+
+  // Build URL helper
+  const buildUrl = (newParams: Record<string, string>) => {
+    const p = new URLSearchParams()
+    const merged = { ...params, ...newParams }
+    Object.entries(merged).forEach(([key, value]) => {
+      if (value && value !== 'ALL' && value !== '') {
+        p.set(key, value)
+      }
+    })
+    return `/shop${p.toString() ? `?${p.toString()}` : ''}`
+  }
 
   return (
     <>
@@ -175,7 +167,9 @@ function ShopContent() {
         {/* Page Header */}
         <section className="py-12 border-b border-border">
           <div className="container mx-auto px-4">
-            <h1 className="text-4xl font-bold text-foreground mb-4">ร้านค้า</h1>
+            <h1 className="text-4xl font-bold text-foreground mb-4">
+              <span className="text-gradient">ร้านค้า</span>
+            </h1>
             <p className="text-muted-foreground">
               ค้นหาสินค้าที่คุณต้องการจากคอลเลกชันของเรา
             </p>
@@ -184,54 +178,99 @@ function ShopContent() {
 
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col lg:flex-row gap-8">
-            {/* Sidebar Filters - Desktop */}
-            <aside className="hidden lg:block w-64 flex-shrink-0">
-              <Card variant="glass" className="p-6 sticky top-24">
+            {/* Sidebar Filters */}
+            <aside className="w-full lg:w-64 shrink-0">
+              <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="font-semibold text-foreground">ตัวกรอง</h3>
-                  <Button variant="ghost" size="sm" onClick={resetFilters}>
-                    รีเซ็ต
-                  </Button>
+                  {(currentType !== 'ALL' || currentCategory || currentSearch) && (
+                    <Link href="/shop">
+                      <Button variant="ghost" size="sm">รีเซ็ต</Button>
+                    </Link>
+                  )}
                 </div>
 
                 {/* Product Type */}
                 <div className="mb-6">
                   <h4 className="text-sm font-medium text-muted-foreground mb-3">ประเภทสินค้า</h4>
                   <div className="space-y-2">
-                    {['ALL', 'DIGITAL', 'PHYSICAL'].map((type) => (
-                      <label key={type} className="flex items-center space-x-3 cursor-pointer group">
-                        <input
-                          type="radio"
-                          name="type"
-                          checked={filters.type === type}
-                          onChange={() => setType(type as any)}
-                          className="w-4 h-4 text-primary bg-input border-border focus:ring-primary"
-                        />
-                        <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
-                          {type === 'ALL' ? 'ทั้งหมด' : type === 'DIGITAL' ? 'สินค้าดิจิทัล' : 'สินค้าจัดส่ง'}
-                        </span>
-                      </label>
+                    {[
+                      { value: 'ALL', label: 'ทั้งหมด' },
+                      { value: 'DIGITAL', label: 'สินค้าดิจิทัล' },
+                      { value: 'PHYSICAL', label: 'สินค้าจัดส่ง' },
+                    ].map((type) => (
+                      <Link
+                        key={type.value}
+                        href={buildUrl({ type: type.value, page: '1' })}
+                        className={`block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                          currentType === type.value
+                            ? 'bg-purple-500/20 text-purple-400'
+                            : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                        }`}
+                      >
+                        {type.label}
+                      </Link>
                     ))}
                   </div>
                 </div>
 
                 {/* Categories */}
-                <div className="mb-6">
-                  <h4 className="text-sm font-medium text-muted-foreground mb-3">หมวดหมู่</h4>
-                  <div className="space-y-2">
-                    {categories.map((cat) => (
-                      <button
-                        key={cat.slug}
-                        onClick={() => setCategory(cat.slug || null)}
+                {categories.length > 0 && (
+                  <div className="mb-6">
+                    <h4 className="text-sm font-medium text-muted-foreground mb-3">หมวดหมู่</h4>
+                    <div className="space-y-2">
+                      <Link
+                        href={buildUrl({ category: '', page: '1' })}
                         className={`block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                          filters.category === (cat.slug || null)
-                            ? 'bg-primary/20 text-primary'
+                          !currentCategory
+                            ? 'bg-purple-500/20 text-purple-400'
                             : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                         }`}
                       >
-                        {cat.name}
-                      </button>
-                    ))}
+                        ทั้งหมด
+                      </Link>
+                      {categories.map((cat) => (
+                        <Link
+                          key={cat.id}
+                          href={buildUrl({ category: cat.slug, page: '1' })}
+                          className={`block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                            currentCategory === cat.slug
+                              ? 'bg-purple-500/20 text-purple-400'
+                              : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                          }`}
+                        >
+                          {cat.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Sort */}
+                <div>
+                  <h4 className="text-sm font-medium text-muted-foreground mb-3">เรียงตาม</h4>
+                  <div className="space-y-2">
+                    {[
+                      { value: 'createdAt-desc', label: 'ล่าสุด' },
+                      { value: 'price-asc', label: 'ราคา: ต่ำ - สูง' },
+                      { value: 'price-desc', label: 'ราคา: สูง - ต่ำ' },
+                      { value: 'name-asc', label: 'ชื่อ: A - Z' },
+                    ].map((sort) => {
+                      const [sortBy, sortOrder] = sort.value.split('-')
+                      return (
+                        <Link
+                          key={sort.value}
+                          href={buildUrl({ sortBy, sortOrder, page: '1' })}
+                          className={`block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                            currentSort === sort.value
+                              ? 'bg-purple-500/20 text-purple-400'
+                              : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                          }`}
+                        >
+                          {sort.label}
+                        </Link>
+                      )
+                    })}
                   </div>
                 </div>
               </Card>
@@ -239,181 +278,136 @@ function ShopContent() {
 
             {/* Main Content */}
             <div className="flex-1">
-              {/* Toolbar */}
-              <div className="flex flex-col sm:flex-row gap-4 mb-6">
-                {/* Search */}
-                <div className="flex-1">
-                  <Input
-                    placeholder="ค้นหาสินค้า..."
-                    icon={<Search className="h-4 w-4" />}
-                    value={filters.search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                </div>
-
-                {/* Sort */}
-                <Select
-                  value={`${filters.sortBy}-${filters.sortOrder}`}
-                  onValueChange={(value) => {
-                    const [sortBy, sortOrder] = value.split('-') as [any, any]
-                    setSort(sortBy, sortOrder)
-                  }}
-                >
-                  <SelectTrigger className="w-full sm:w-[200px]">
-                    <SelectValue placeholder="เรียงตาม" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="createdAt-desc">ล่าสุด</SelectItem>
-                    <SelectItem value="price-asc">ราคา: ต่ำ - สูง</SelectItem>
-                    <SelectItem value="price-desc">ราคา: สูง - ต่ำ</SelectItem>
-                    <SelectItem value="name-asc">ชื่อ: A - Z</SelectItem>
-                    <SelectItem value="name-desc">ชื่อ: Z - A</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                {/* View Toggle */}
-                <div className="hidden sm:flex items-center border border-border rounded-lg">
-                  <Button
-                    variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
-                    size="icon"
-                    onClick={() => setViewMode('grid')}
-                    className="rounded-r-none"
-                  >
-                    <Grid className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant={viewMode === 'list' ? 'secondary' : 'ghost'}
-                    size="icon"
-                    onClick={() => setViewMode('list')}
-                    className="rounded-l-none"
-                  >
-                    <List className="h-4 w-4" />
-                  </Button>
-                </div>
-
-                {/* Mobile Filter Toggle */}
-                <Button
-                  variant="outline"
-                  className="lg:hidden"
-                  onClick={() => setShowFilters(!showFilters)}
-                >
-                  <SlidersHorizontal className="h-4 w-4 mr-2" />
-                  ตัวกรอง
-                </Button>
-              </div>
-
-              {/* Active Filters */}
-              {(filters.type !== 'ALL' || filters.category || filters.search) && (
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {filters.type !== 'ALL' && (
-                    <Badge variant="secondary" className="pl-3">
-                      {filters.type === 'DIGITAL' ? 'สินค้าดิจิทัล' : 'สินค้าจัดส่ง'}
-                      <button onClick={() => setType('ALL')} className="ml-2">
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  )}
-                  {filters.category && (
-                    <Badge variant="secondary" className="pl-3">
-                      {categories.find((c) => c.slug === filters.category)?.name}
-                      <button onClick={() => setCategory(null)} className="ml-2">
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  )}
-                  {filters.search && (
-                    <Badge variant="secondary" className="pl-3">
-                      "{filters.search}"
-                      <button onClick={() => setSearch('')} className="ml-2">
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  )}
-                </div>
-              )}
-
               {/* Results Count */}
               <p className="text-sm text-muted-foreground mb-6">
-                พบ {sortedProducts.length} สินค้า
+                พบ {total} สินค้า
               </p>
 
               {/* Product Grid */}
-              {sortedProducts.length > 0 ? (
-                <div className={viewMode === 'grid' 
-                  ? 'grid sm:grid-cols-2 lg:grid-cols-3 gap-6'
-                  : 'space-y-4'
-                }>
-                  {sortedProducts.map((product) => (
-                    <Link key={product.id} href={`/shop/${product.slug}`}>
-                      <Card 
-                        variant="glass" 
-                        className={`group overflow-hidden card-hover shine ${
-                          viewMode === 'list' ? 'flex' : ''
-                        }`}
-                      >
-                        {/* Product Image */}
-                        <div className={`relative overflow-hidden bg-muted ${
-                          viewMode === 'list' ? 'w-48 flex-shrink-0' : 'aspect-square'
-                        }`}>
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <ShoppingBag className="w-16 h-16 text-muted-foreground group-hover:text-primary/50 transition-colors" />
-                          </div>
-                          
-                          {/* Badges */}
-                          <div className="absolute top-3 left-3 flex flex-col gap-2">
-                            {product.productType === 'DIGITAL' && (
-                              <Badge variant="gold" className="text-xs">
-                                <Download className="w-3 h-3 mr-1" />
-                                ดิจิทัล
-                              </Badge>
-                            )}
-                            {product.comparePrice && (
-                              <Badge variant="destructive" className="text-xs">
-                                ลด {Math.round((1 - product.price / product.comparePrice) * 100)}%
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
+              {products.length > 0 ? (
+                <>
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {products.map((product) => {
+                      const color = getCategoryColor(product.category?.slug || '')
+                      const colorClass = getColorClasses(color)
+                      const price = Number(product.price)
+                      const comparePrice = product.comparePrice ? Number(product.comparePrice) : null
 
-                        <CardContent className={`p-4 ${viewMode === 'list' ? 'flex-1' : ''}`}>
-                          <p className="text-xs text-primary mb-1">{product.category.name}</p>
-                          <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-2">
-                            {product.name}
-                          </h3>
-                          
-                          {/* Rating */}
-                          <div className="flex items-center gap-2 mb-3">
-                            <div className="flex items-center">
-                              <Star className="w-4 h-4 text-primary fill-primary" />
-                              <span className="text-sm text-foreground ml-1">{product.rating}</span>
+                      return (
+                        <Link key={product.id} href={`/shop/${product.slug}`}>
+                          <Card className="group overflow-hidden bg-card/50 backdrop-blur-sm border-border/50 hover:border-purple-500/30 transition-all duration-300 hover:-translate-y-1">
+                            {/* Product Image */}
+                            <div className="aspect-square relative overflow-hidden bg-linear-to-br from-muted/50 to-muted">
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <ShoppingBag className={`w-16 h-16 text-muted-foreground/30 group-hover:${colorClass.text} transition-colors`} />
+                              </div>
+                              
+                              {/* Badges */}
+                              <div className="absolute top-3 left-3 flex flex-col gap-2">
+                                {product.productType === 'DIGITAL' && (
+                                  <Badge className="text-xs bg-cyan-500/20 text-cyan-400 border-cyan-500/30">
+                                    <Download className="w-3 h-3 mr-1" />
+                                    ดิจิทัล
+                                  </Badge>
+                                )}
+                                {comparePrice && (
+                                  <Badge className="text-xs bg-red-500/20 text-red-400 border-red-500/30">
+                                    ลด {Math.round((1 - price / comparePrice) * 100)}%
+                                  </Badge>
+                                )}
+                              </div>
+
+                              {/* Category Badge */}
+                              {product.category && (
+                                <div className="absolute top-3 right-3">
+                                  <Badge className={`text-xs ${colorClass.badge}`}>
+                                    {product.category.name}
+                                  </Badge>
+                                </div>
+                              )}
                             </div>
-                            <span className="text-xs text-muted-foreground">({product.reviewCount})</span>
-                          </div>
 
-                          {/* Price */}
-                          <div className="flex items-center gap-2">
-                            <span className="text-lg font-bold text-primary">
-                              {formatCurrency(product.price)}
-                            </span>
-                            {product.comparePrice && (
-                              <span className="text-sm text-muted-foreground line-through">
-                                {formatCurrency(product.comparePrice)}
-                              </span>
-                            )}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  ))}
-                </div>
+                            <CardContent className="p-4">
+                              <h3 className="font-semibold text-foreground group-hover:text-purple-400 transition-colors line-clamp-2 mb-2">
+                                {product.name}
+                              </h3>
+                              
+                              {/* Rating */}
+                              <div className="flex items-center gap-2 mb-3">
+                                <div className="flex items-center">
+                                  <Star className={`w-4 h-4 ${colorClass.text} fill-current`} />
+                                  <span className="text-sm text-foreground ml-1">
+                                    {product.rating > 0 ? product.rating.toFixed(1) : '-'}
+                                  </span>
+                                </div>
+                                <span className="text-xs text-muted-foreground">
+                                  ({product.reviewCount} รีวิว)
+                                </span>
+                              </div>
+
+                              {/* Price */}
+                              <div className="flex items-center gap-2">
+                                <span className={`text-lg font-bold ${colorClass.text}`}>
+                                  {formatCurrency(price)}
+                                </span>
+                                {comparePrice && (
+                                  <span className="text-sm text-muted-foreground line-through">
+                                    {formatCurrency(comparePrice)}
+                                  </span>
+                                )}
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </Link>
+                      )
+                    })}
+                  </div>
+
+                  {/* Pagination */}
+                  {totalPages > 1 && (
+                    <div className="flex justify-center gap-2 mt-8">
+                      {page > 1 && (
+                        <Link href={buildUrl({ page: String(page - 1) })}>
+                          <Button variant="outline">ก่อนหน้า</Button>
+                        </Link>
+                      )}
+                      
+                      <div className="flex items-center gap-2">
+                        {Array.from({ length: totalPages }, (_, i) => i + 1)
+                          .filter(p => p === 1 || p === totalPages || (p >= page - 1 && p <= page + 1))
+                          .map((p, idx, arr) => (
+                            <>
+                              {idx > 0 && arr[idx - 1] !== p - 1 && (
+                                <span key={`ellipsis-${p}`} className="text-muted-foreground">...</span>
+                              )}
+                              <Link key={p} href={buildUrl({ page: String(p) })}>
+                                <Button
+                                  variant={p === page ? 'neon' : 'outline'}
+                                  size="sm"
+                                >
+                                  {p}
+                                </Button>
+                              </Link>
+                            </>
+                          ))}
+                      </div>
+
+                      {page < totalPages && (
+                        <Link href={buildUrl({ page: String(page + 1) })}>
+                          <Button variant="outline">ถัดไป</Button>
+                        </Link>
+                      )}
+                    </div>
+                  )}
+                </>
               ) : (
-                <Card variant="glass" className="p-12 text-center">
+                <Card className="p-12 text-center bg-card/50 backdrop-blur-sm">
                   <ShoppingBag className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-xl font-semibold text-foreground mb-2">ไม่พบสินค้า</h3>
                   <p className="text-muted-foreground mb-6">ลองปรับตัวกรองหรือค้นหาด้วยคำอื่น</p>
-                  <Button variant="outline" onClick={resetFilters}>
-                    รีเซ็ตตัวกรอง
-                  </Button>
+                  <Link href="/shop">
+                    <Button variant="outline">รีเซ็ตตัวกรอง</Button>
+                  </Link>
                 </Card>
               )}
             </div>
@@ -422,21 +416,5 @@ function ShopContent() {
       </main>
       <Footer />
     </>
-  )
-}
-
-export default function ShopPage() {
-  return (
-    <Suspense fallback={
-      <>
-        <Header />
-        <main className="min-h-screen py-16 flex items-center justify-center bg-background">
-          <div className="animate-spin h-8 w-8 border-2 border-primary rounded-full border-t-transparent" />
-        </main>
-        <Footer />
-      </>
-    }>
-      <ShopContent />
-    </Suspense>
   )
 }

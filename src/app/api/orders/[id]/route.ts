@@ -57,12 +57,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
             key: true,
             status: true,
             expiresAt: true,
-            product: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
+            productId: true,
           },
         },
         coupon: {

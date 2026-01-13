@@ -16,7 +16,8 @@ import {
   Bell,
   ChevronDown,
   Crown,
-  Store
+  Store,
+  Gift
 } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '@/components/ui'
@@ -31,6 +32,7 @@ const navItems = [
   { icon: ShoppingCart, label: 'คำสั่งซื้อ', href: '/admin/orders' },
   { icon: Users, label: 'ลูกค้า', href: '/admin/customers' },
   { icon: Key, label: 'ไลเซนส์', href: '/admin/licenses' },
+  { icon: Gift, label: 'วงล้อนำโชค', href: '/admin/spin-wheel' },
   { icon: BarChart3, label: 'รายงาน', href: '/admin/reports' },
   { icon: Settings, label: 'ตั้งค่า', href: '/admin/settings' },
 ]
@@ -67,7 +69,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               className="rounded-xl shadow-lg shadow-primary/20"
             />
             <div>
-              <span className="text-xl font-bold bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 text-transparent bg-clip-text">Admin Panel</span>
+              <span className="text-xl font-bold bg-linear-to-r from-yellow-400 via-amber-400 to-yellow-500 text-transparent bg-clip-text">Admin Panel</span>
               <p className="text-xs text-muted-foreground">Soft Stop Shop</p>
             </div>
           </Link>
@@ -83,7 +85,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 href={item.href}
                 className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 ${
                   active 
-                    ? 'bg-gradient-to-r from-primary/20 to-primary/20 text-primary border border-primary/30 shadow-lg shadow-primary/10'
+                    ? 'bg-linear-to-r from-primary/20 to-primary/20 text-primary border border-primary/30 shadow-lg shadow-primary/10'
                     : 'text-muted-foreground hover:text-primary hover:bg-muted/50 border border-transparent'
                 }`}
               >
@@ -98,9 +100,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </nav>
 
         {/* Stats Card */}
-        <div className="mx-4 mt-6 p-4 rounded-xl bg-gradient-to-br from-primary/10 to-primary/10 border border-primary/20">
+        <div className="mx-4 mt-6 p-4 rounded-xl bg-linear-to-br from-primary/10 to-primary/10 border border-primary/20">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-500 to-amber-500 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg bg-linear-to-br from-yellow-500 to-amber-500 flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-black" />
             </div>
             <div>
@@ -109,7 +111,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </div>
           </div>
           <div className="h-1 bg-muted rounded-full overflow-hidden">
-            <div className="h-full w-3/4 bg-gradient-to-r from-yellow-500 to-amber-500 rounded-full" />
+            <div className="h-full w-3/4 bg-linear-to-r from-yellow-500 to-amber-500 rounded-full" />
           </div>
           <p className="text-xs text-muted-foreground mt-2">75% ของเป้าหมาย</p>
         </div>
@@ -163,12 +165,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             {/* Notifications */}
             <Button variant="ghost" size="icon" className="relative hover:bg-muted/50">
               <Bell className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full border-2 border-card"></span>
+              <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-linear-to-r from-amber-500 to-yellow-500 rounded-full border-2 border-card"></span>
             </Button>
 
             {/* User Menu */}
             <div className="flex items-center space-x-3 cursor-pointer px-3 py-2 rounded-xl hover:bg-muted/50 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center shadow-lg shadow-primary/20">
+              <div className="w-10 h-10 rounded-xl bg-linear-to-br from-amber-500 to-yellow-500 flex items-center justify-center shadow-lg shadow-primary/20">
                 <span className="text-black font-bold text-sm">A</span>
               </div>
               <div className="hidden sm:block">

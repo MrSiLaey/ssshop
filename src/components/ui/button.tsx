@@ -6,28 +6,36 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
         default:
-          'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm',
+          'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm hover:shadow-lg hover:shadow-primary/20',
         destructive:
           'bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm',
         outline:
-          'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+          'border border-input bg-background hover:bg-accent/10 hover:border-accent',
         secondary:
           'bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-sm',
         ghost:
-          'hover:bg-accent hover:text-accent-foreground',
+          'hover:bg-accent/10 hover:text-accent',
         link:
           'text-primary underline-offset-4 hover:underline',
         neon:
-          'bg-transparent border-2 border-primary text-primary hover:bg-primary/10 hover:shadow-lg hover:shadow-primary/20',
+          'bg-transparent border-2 border-primary text-primary hover:bg-primary/10 hover:shadow-lg hover:shadow-primary/30 hover:border-primary/80',
+        'neon-cyan':
+          'bg-transparent border-2 border-cyan-500 text-cyan-500 hover:bg-cyan-500/10 hover:shadow-lg hover:shadow-cyan-500/30',
+        'neon-pink':
+          'bg-transparent border-2 border-pink-500 text-pink-500 hover:bg-pink-500/10 hover:shadow-lg hover:shadow-pink-500/30',
+        'neon-green':
+          'bg-transparent border-2 border-green-500 text-green-500 hover:bg-green-500/10 hover:shadow-lg hover:shadow-green-500/30',
+        'neon-fill':
+          'bg-linear-to-r from-purple-600 via-purple-500 to-cyan-500 text-white font-semibold hover:shadow-xl hover:shadow-purple-500/40 hover:scale-105',
         glow:
-          'bg-gradient-to-r from-yellow-400 via-yellow-500 to-amber-500 text-black font-semibold hover:shadow-2xl hover:shadow-yellow-500/50 animate-pulse-slow',
+          'bg-linear-to-r from-purple-500 via-pink-500 to-cyan-500 text-white font-semibold hover:shadow-2xl hover:shadow-purple-500/50 animate-pulse-neon',
         gold:
-          'bg-gradient-to-r from-yellow-300 via-yellow-400 to-amber-500 text-black font-bold hover:from-yellow-200 hover:via-yellow-300 hover:to-amber-400 shadow-lg shadow-yellow-500/30 hover:shadow-yellow-500/50',
+          'bg-linear-to-r from-yellow-300 via-yellow-400 to-amber-500 text-black font-bold hover:from-yellow-200 hover:via-yellow-300 hover:to-amber-400 shadow-lg shadow-yellow-500/30 hover:shadow-yellow-500/50',
       },
       size: {
         default: 'h-10 px-4 py-2',

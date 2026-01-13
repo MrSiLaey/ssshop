@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { 
   Key, 
   Search, 
@@ -14,78 +14,59 @@ import {
 } from 'lucide-react'
 import { Card, Badge, Button, Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui'
 
-// Mock data
-const licenses = [
-  {
-    id: '1',
-    key: 'SSS-PREM-XXXX-YYYY-ZZZZ',
-    productName: 'Premium Software License',
-    customer: { name: 'สมชาย ใจดี', email: 'somchai@email.com' },
-    status: 'ACTIVE',
-    createdAt: '2024-01-15',
-    expiresAt: '2025-01-15',
-    activations: 2,
-    maxActivations: 3,
-    orderId: 'ORD-2024-001234',
-  },
-  {
-    id: '2',
-    key: 'SSS-DEVT-AAAA-BBBB-CCCC',
-    productName: 'Developer Toolkit Pro',
-    customer: { name: 'สมหญิง ดีใจ', email: 'somying@email.com' },
-    status: 'ACTIVE',
-    createdAt: '2024-01-10',
-    expiresAt: '2025-01-10',
-    activations: 1,
-    maxActivations: 2,
-    orderId: 'ORD-2024-001233',
-  },
-  {
-    id: '3',
-    key: 'SSS-CLOD-DDDD-EEEE-FFFF',
-    productName: 'Cloud Storage 1TB License',
-    customer: { name: 'ประพนธ์ มั่นคง', email: 'prapon@email.com' },
-    status: 'EXPIRED',
-    createdAt: '2023-01-01',
-    expiresAt: '2024-01-01',
-    activations: 3,
-    maxActivations: 3,
-    orderId: 'ORD-2024-001232',
-  },
-  {
-    id: '4',
-    key: 'SSS-PREM-GGGG-HHHH-IIII',
-    productName: 'Premium Software License',
-    customer: { name: 'นารี สุขใจ', email: 'naree@email.com' },
-    status: 'REVOKED',
-    createdAt: '2024-01-05',
-    expiresAt: '2025-01-05',
-    activations: 0,
-    maxActivations: 3,
-    orderId: 'ORD-2024-001231',
-  },
-]
+interface License {
+  id: string
+  licenseKey: string
+  product: { name: string }
+  user: { name: string | null; email: string } | null
+  status: string
+  createdAt: string
+  expiresAt: string | null
+  activations: Array<{ id: string }>
+  maxActivations: number
+  order: { orderNumber: string } | null
+}
 
 const statusConfig = {
   ACTIVE: { label: 'ใช้งานอยู่', variant: 'success' as const },
   EXPIRED: { label: 'หมดอายุ', variant: 'warning' as const },
   REVOKED: { label: 'ถูกยกเลิก', variant: 'destructive' as const },
+  UNUSED: { label: 'ยังไม่ใช้งาน', variant: 'secondary' as const },
 }
 
 export default function AdminLicensesPage() {
+  const [licenses, setLicenses] = useState<License[]>([])
+  const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [visibleKeys, setVisibleKeys] = useState<Set<string>>(new Set())
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
 
+  useEffect(() => {
+    async function fetchLicenses() {
+      try {
+        const res = await fetch('/api/licenses?limit=100')
+        if (res.ok) {
+          const data = await res.json()
+          setLicenses(data.licenses || [])
+        }
+      } catch (error) {
+        console.error('Failed to fetch licenses:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchLicenses()
+  }, [])
+
   const filteredLicenses = licenses.filter((license) => {
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
       return (
-        license.key.toLowerCase().includes(query) ||
-        license.productName.toLowerCase().includes(query) ||
-        license.customer.name.toLowerCase().includes(query) ||
-        license.customer.email.toLowerCase().includes(query)
+        license.licenseKey.toLowerCase().includes(query) ||
+        license.product.name.toLowerCase().includes(query) ||
+        license.user?.name?.toLowerCase().includes(query) ||
+        license.user?.email.toLowerCase().includes(query)
       )
     }
     if (statusFilter !== 'all' && license.status !== statusFilter) {
@@ -110,81 +91,135 @@ export default function AdminLicensesPage() {
     setTimeout(() => setCopiedKey(null), 2000)
   }
 
-  const maskKey = (key: string) => {
+  const maskKey = (key: string | undefined | null) => {
+    if (!key) return '****-****-****-****'
     const parts = key.split('-')
     return parts.map((part, index) => (index === 0 ? part : '****')).join('-')
   }
 
-  // Stats
-  const stats = {
-    total: licenses.length,
-    active: licenses.filter((l) => l.status === 'ACTIVE').length,
-    expired: licenses.filter((l) => l.status === 'EXPIRED').length,
-    revoked: licenses.filter((l) => l.status === 'REVOKED').length,
+  const handleRevoke = async (id: string) => {
+    if (!confirm('คุณแน่ใจหรือไม่ที่จะยกเลิกไลเซนส์นี้?')) return
+    
+    try {
+      const res = await fetch(`/api/licenses/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'REVOKED' }),
+      })
+      if (res.ok) {
+        setLicenses(licenses.map(l => 
+          l.id === id ? { ...l, status: 'REVOKED' } : l
+        ))
+      }
+    } catch (error) {
+      console.error('Failed to revoke license:', error)
+    }
+  }
+
+  const handleActivate = async (id: string) => {
+    try {
+      const res = await fetch(`/api/licenses/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'ACTIVE' }),
+      })
+      if (res.ok) {
+        setLicenses(licenses.map(l => 
+          l.id === id ? { ...l, status: 'ACTIVE' } : l
+        ))
+      }
+    } catch (error) {
+      console.error('Failed to activate license:', error)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="text-center py-20">
+          <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4" />
+          <p className="text-muted-foreground">กำลังโหลด...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div className="space-y-6">
+    <div className="p-6">
       {/* Page Header */}
-      <div>
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500 text-transparent bg-clip-text mb-2">ไลเซนส์</h1>
-        <p className="text-muted-foreground">จัดการไลเซนส์ทั้งหมดในระบบ</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">จัดการไลเซนส์</h1>
+          <p className="text-muted-foreground">จัดการไลเซนส์ทั้งหมดในระบบ ({licenses.length} รายการ)</p>
+        </div>
+        <Button variant="neon">
+          <Key className="w-4 h-4 mr-2" />
+          สร้างไลเซนส์
+        </Button>
       </div>
 
-      {/* Stats */}
-      <div className="grid sm:grid-cols-4 gap-4">
-        <Card variant="glass" className="p-4 border-amber-500/20">
+      {/* Stats Cards */}
+      <div className="grid sm:grid-cols-4 gap-4 mb-6">
+        <Card variant="glass" className="p-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center">
-              <Key className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
+              <Key className="w-5 h-5 text-green-500" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-foreground">{stats.total}</p>
-              <p className="text-sm text-muted-foreground">ทั้งหมด</p>
-            </div>
-          </div>
-        </Card>
-        <Card variant="glass" className="p-4 border-emerald-500/20">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center">
-              <Check className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-emerald-500">{stats.active}</p>
               <p className="text-sm text-muted-foreground">ใช้งานอยู่</p>
+              <p className="text-xl font-bold text-foreground">
+                {licenses.filter(l => l.status === 'ACTIVE').length}
+              </p>
             </div>
           </div>
         </Card>
-        <Card variant="glass" className="p-4 border-amber-500/20">
+        <Card variant="glass" className="p-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center">
-              <AlertTriangle className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 rounded-lg bg-yellow-500/20 flex items-center justify-center">
+              <AlertTriangle className="w-5 h-5 text-yellow-500" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-amber-500">{stats.expired}</p>
               <p className="text-sm text-muted-foreground">หมดอายุ</p>
+              <p className="text-xl font-bold text-foreground">
+                {licenses.filter(l => l.status === 'EXPIRED').length}
+              </p>
             </div>
           </div>
         </Card>
-        <Card variant="glass" className="p-4 border-zinc-500/20">
+        <Card variant="glass" className="p-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-zinc-500 to-zinc-600 flex items-center justify-center">
-              <Ban className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center">
+              <Ban className="w-5 h-5 text-red-500" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-muted-foreground">{stats.revoked}</p>
               <p className="text-sm text-muted-foreground">ถูกยกเลิก</p>
+              <p className="text-xl font-bold text-foreground">
+                {licenses.filter(l => l.status === 'REVOKED').length}
+              </p>
+            </div>
+          </div>
+        </Card>
+        <Card variant="glass" className="p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-gray-500/20 flex items-center justify-center">
+              <RefreshCw className="w-5 h-5 text-gray-500" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">ยังไม่ใช้งาน</p>
+              <p className="text-xl font-bold text-foreground">
+                {licenses.filter(l => l.status === 'UNUSED').length}
+              </p>
             </div>
           </div>
         </Card>
       </div>
 
       {/* Filters */}
-      <Card variant="glass" className="p-4 border-amber-500/20">
+      <Card variant="glass" className="p-4 mb-6">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
             <Input
-              placeholder="ค้นหาไลเซนส์, สินค้า หรือลูกค้า..."
+              placeholder="ค้นหาไลเซนส์ หรือชื่อสินค้า..."
               icon={<Search className="h-4 w-4" />}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -192,135 +227,132 @@ export default function AdminLicensesPage() {
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-full sm:w-[180px]">
-              <SelectValue placeholder="สถานะทั้งหมด" />
+              <SelectValue placeholder="สถานะ" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">สถานะทั้งหมด</SelectItem>
+              <SelectItem value="all">ทุกสถานะ</SelectItem>
               <SelectItem value="ACTIVE">ใช้งานอยู่</SelectItem>
               <SelectItem value="EXPIRED">หมดอายุ</SelectItem>
               <SelectItem value="REVOKED">ถูกยกเลิก</SelectItem>
+              <SelectItem value="UNUSED">ยังไม่ใช้งาน</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </Card>
 
       {/* Licenses Table */}
-      <Card variant="glass" className="overflow-hidden border-amber-500/20">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="text-left text-sm text-muted-foreground bg-muted/50">
-                <th className="p-4 font-medium">License Key</th>
-                <th className="p-4 font-medium">สินค้า</th>
-                <th className="p-4 font-medium">ลูกค้า</th>
-                <th className="p-4 font-medium">สถานะ</th>
-                <th className="p-4 font-medium">การใช้งาน</th>
-                <th className="p-4 font-medium">หมดอายุ</th>
-                <th className="p-4 font-medium"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredLicenses.map((license) => {
-                const status = statusConfig[license.status as keyof typeof statusConfig]
-                const isVisible = visibleKeys.has(license.id)
-                const isCopied = copiedKey === license.id
-                const daysUntilExpiry = Math.ceil(
-                  (new Date(license.expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
-                )
+      {filteredLicenses.length > 0 ? (
+        <Card variant="glass" className="overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">ไลเซนส์</th>
+                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">สินค้า</th>
+                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">ลูกค้า</th>
+                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">สถานะ</th>
+                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">การใช้งาน</th>
+                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">สร้างเมื่อ</th>
+                  <th className="text-left p-4 text-sm font-medium text-muted-foreground">หมดอายุ</th>
+                  <th className="text-right p-4 text-sm font-medium text-muted-foreground">การดำเนินการ</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredLicenses.map((license) => {
+                  const status = statusConfig[license.status as keyof typeof statusConfig] || statusConfig.ACTIVE
+                  const isVisible = visibleKeys.has(license.id)
+                  const isCopied = copiedKey === license.id
+                  const createdDate = new Date(license.createdAt)
+                  const expiresDate = license.expiresAt ? new Date(license.expiresAt) : null
 
-                return (
-                  <tr key={license.id} className="border-t border-border/50 hover:bg-muted/30 transition-colors">
-                    <td className="p-4">
-                      <div className="flex items-center gap-2">
-                        <Key className="w-4 h-4 text-amber-500" />
-                        <code className="font-mono text-amber-500">
-                          {isVisible ? license.key : maskKey(license.key)}
-                        </code>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6 text-muted-foreground hover:text-amber-500"
-                          onClick={() => toggleKeyVisibility(license.id)}
-                        >
-                          {isVisible ? (
-                            <EyeOff className="w-3 h-3" />
-                          ) : (
-                            <Eye className="w-3 h-3" />
-                          )}
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6 text-muted-foreground hover:text-amber-500"
-                          onClick={() => copyToClipboard(license.key, license.id)}
-                        >
-                          {isCopied ? (
-                            <Check className="w-3 h-3 text-emerald-400" />
-                          ) : (
-                            <Copy className="w-3 h-3" />
-                          )}
-                        </Button>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <p className="text-foreground font-medium">{license.productName}</p>
-                    </td>
-                    <td className="p-4">
-                      <div>
-                        <p className="text-foreground">{license.customer.name}</p>
-                        <p className="text-sm text-muted-foreground">{license.customer.email}</p>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-2">
+                  return (
+                    <tr key={license.id} className="border-b border-border/50 hover:bg-muted/50">
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <code className="font-mono text-sm text-foreground">
+                            {isVisible ? license.licenseKey : maskKey(license.licenseKey)}
+                          </code>
+                          <button
+                            onClick={() => toggleKeyVisibility(license.id)}
+                            className="p-1 hover:bg-muted rounded"
+                          >
+                            {isVisible ? <EyeOff className="w-4 h-4 text-muted-foreground" /> : <Eye className="w-4 h-4 text-muted-foreground" />}
+                          </button>
+                          <button
+                            onClick={() => copyToClipboard(license.licenseKey, license.id)}
+                            className="p-1 hover:bg-muted rounded"
+                          >
+                            {isCopied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4 text-muted-foreground" />}
+                          </button>
+                        </div>
+                      </td>
+                      <td className="p-4 text-sm text-foreground">
+                        {license.product.name}
+                      </td>
+                      <td className="p-4">
+                        {license.user ? (
+                          <div>
+                            <p className="text-sm text-foreground">{license.user.name || 'ไม่ระบุชื่อ'}</p>
+                            <p className="text-xs text-muted-foreground">{license.user.email}</p>
+                          </div>
+                        ) : (
+                          <span className="text-sm text-muted-foreground">-</span>
+                        )}
+                      </td>
+                      <td className="p-4">
                         <Badge variant={status.variant}>{status.label}</Badge>
-                        {license.status === 'ACTIVE' && daysUntilExpiry <= 30 && daysUntilExpiry > 0 && (
-                          <span title={`หมดอายุใน ${daysUntilExpiry} วัน`}><AlertTriangle className="w-4 h-4 text-amber-500" /></span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <span className={`${
-                        license.activations >= license.maxActivations ? 'text-amber-500' : 'text-muted-foreground'
-                      }`}>
-                        {license.activations}/{license.maxActivations}
-                      </span>
-                    </td>
-                    <td className="p-4">
-                      <span className="text-muted-foreground">{license.expiresAt}</span>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-2">
-                        {license.status === 'ACTIVE' && (
-                          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground hover:bg-muted" title="ยกเลิกไลเซนส์">
-                            <Ban className="w-4 h-4" />
-                          </Button>
-                        )}
-                        {license.status === 'EXPIRED' && (
-                          <Button variant="ghost" size="icon" className="text-emerald-500 hover:text-emerald-400 hover:bg-emerald-500/10" title="ต่ออายุไลเซนส์">
-                            <RefreshCw className="w-4 h-4" />
-                          </Button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        <div className="flex items-center justify-between p-4 border-t border-border">
-          <p className="text-sm text-muted-foreground">
-            แสดง {filteredLicenses.length} จาก {licenses.length} รายการ
-          </p>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" disabled className="border-border">ก่อนหน้า</Button>
-            <Button variant="outline" size="sm" disabled className="border-border">ถัดไป</Button>
+                      </td>
+                      <td className="p-4 text-sm text-muted-foreground">
+                        {license.activations?.length || 0}/{license.maxActivations}
+                      </td>
+                      <td className="p-4 text-sm text-muted-foreground">
+                        {createdDate.toLocaleDateString('th-TH')}
+                      </td>
+                      <td className="p-4 text-sm text-muted-foreground">
+                        {expiresDate ? expiresDate.toLocaleDateString('th-TH') : 'ไม่มีวันหมดอายุ'}
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center justify-end gap-2">
+                          {license.status === 'REVOKED' ? (
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              title="เปิดใช้งานอีกครั้ง"
+                              onClick={() => handleActivate(license.id)}
+                            >
+                              <RefreshCw className="w-4 h-4 text-green-500" />
+                            </Button>
+                          ) : (
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              title="ยกเลิกไลเซนส์"
+                              onClick={() => handleRevoke(license.id)}
+                            >
+                              <Ban className="w-4 h-4 text-red-500" />
+                            </Button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
           </div>
-        </div>
-      </Card>
+        </Card>
+      ) : (
+        <Card variant="glass" className="p-12 text-center">
+          <Key className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-xl font-semibold text-foreground mb-2">ไม่พบไลเซนส์</h3>
+          <p className="text-muted-foreground">
+            {searchQuery || statusFilter !== 'all'
+              ? 'ลองปรับตัวกรองหรือค้นหาด้วยคำอื่น'
+              : 'ยังไม่มีไลเซนส์ในระบบ'
+            }
+          </p>
+        </Card>
+      )}
     </div>
   )
 }

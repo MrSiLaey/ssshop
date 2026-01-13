@@ -1,11 +1,9 @@
-'use client'
-
+import { getServerSession } from 'next-auth'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { 
   Package, 
   Key, 
-  Settings, 
-  User, 
   Download,
   ShoppingBag,
   Clock,
@@ -13,52 +11,90 @@ import {
   AlertCircle
 } from 'lucide-react'
 import { Header, Footer } from '@/components/layout'
-import { Card, CardContent, Badge, Button } from '@/components/ui'
+import { Card, Badge, Button } from '@/components/ui'
 import { formatCurrency } from '@/lib/utils'
-
-// Mock data
-const recentOrders = [
-  {
-    id: 'ORD-2024-001234',
-    date: '2024-01-15',
-    total: 2990,
-    status: 'COMPLETED',
-    items: 1,
-  },
-  {
-    id: 'ORD-2024-001233',
-    date: '2024-01-10',
-    total: 4980,
-    status: 'PROCESSING',
-    items: 2,
-  },
-]
-
-const licenses = [
-  {
-    id: '1',
-    productName: 'Premium Software License',
-    key: 'SSS-PREM-XXXX-YYYY-ZZZZ',
-    status: 'ACTIVE',
-    expiresAt: '2025-01-15',
-    activations: 2,
-    maxActivations: 3,
-  },
-]
-
-const dashboardCards = [
-  { title: 'คำสั่งซื้อทั้งหมด', value: '12', icon: Package, href: '/dashboard/orders' },
-  { title: 'ไลเซนส์ที่ใช้งาน', value: '5', icon: Key, href: '/dashboard/licenses' },
-  { title: 'ไฟล์ดาวน์โหลด', value: '8', icon: Download, href: '/dashboard/downloads' },
-]
+import { authOptions } from '@/lib/auth'
+import prisma from '@/lib/db'
 
 const statusConfig = {
   COMPLETED: { label: 'สำเร็จ', variant: 'success' as const, icon: CheckCircle2 },
   PROCESSING: { label: 'กำลังดำเนินการ', variant: 'warning' as const, icon: Clock },
   PENDING: { label: 'รอดำเนินการ', variant: 'secondary' as const, icon: AlertCircle },
+  SHIPPED: { label: 'จัดส่งแล้ว', variant: 'info' as const, icon: Package },
+  CANCELLED: { label: 'ยกเลิก', variant: 'destructive' as const, icon: AlertCircle },
 }
 
-export default function DashboardPage() {
+async function getDashboardData(userId: string) {
+  const [ordersCount, licensesCount, recentOrders, licenses] = await Promise.all([
+    prisma.order.count({
+      where: { userId },
+    }),
+    prisma.licenseKey.count({
+      where: { userId, status: 'ACTIVE' },
+    }),
+    prisma.order.findMany({
+      where: { userId },
+      include: {
+        _count: { select: { items: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 3,
+    }),
+    prisma.licenseKey.findMany({
+      where: { userId, status: 'ACTIVE' },
+      include: {
+        product: { select: { name: true, slug: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 3,
+    }),
+  ])
+
+  // Count digital downloads (license keys count as downloads)
+  const downloadsCount = await prisma.licenseKey.count({
+    where: { userId },
+  })
+
+  return {
+    stats: {
+      orders: ordersCount,
+      licenses: licensesCount,
+      downloads: downloadsCount,
+    },
+    recentOrders: recentOrders.map(order => ({
+      id: order.orderNumber,
+      date: order.createdAt.toISOString().split('T')[0],
+      total: Number(order.total),
+      status: order.status,
+      items: order._count.items,
+    })),
+    licenses: licenses.map(license => ({
+      id: license.id,
+      productName: license.product.name,
+      key: license.key,
+      status: license.status,
+      expiresAt: license.expiresAt?.toISOString().split('T')[0] || null,
+      activations: license.activationsCount,
+      maxActivations: license.activationsLimit,
+    })),
+  }
+}
+
+export default async function DashboardPage() {
+  const session = await getServerSession(authOptions)
+
+  if (!session?.user?.id) {
+    redirect('/auth/login?callbackUrl=/dashboard')
+  }
+
+  const { stats, recentOrders, licenses } = await getDashboardData(session.user.id)
+
+  const dashboardCards = [
+    { title: 'คำสั่งซื้อทั้งหมด', value: String(stats.orders), icon: Package, href: '/dashboard/orders' },
+    { title: 'ไลเซนส์ที่ใช้งาน', value: String(stats.licenses), icon: Key, href: '/dashboard/licenses' },
+    { title: 'ไฟล์ดาวน์โหลด', value: String(stats.downloads), icon: Download, href: '/dashboard/licenses' },
+  ]
+
   return (
     <>
       <Header />
@@ -67,7 +103,9 @@ export default function DashboardPage() {
           {/* Page Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-foreground mb-2">แดชบอร์ด</h1>
-            <p className="text-muted-foreground">ยินดีต้อนรับกลับมา! จัดการบัญชีและคำสั่งซื้อของคุณ</p>
+            <p className="text-muted-foreground">
+              ยินดีต้อนรับกลับมา, {session.user.name || session.user.email}!
+            </p>
           </div>
 
           {/* Stats Cards */}
@@ -102,7 +140,7 @@ export default function DashboardPage() {
               {recentOrders.length > 0 ? (
                 <div className="space-y-4">
                   {recentOrders.map((order) => {
-                    const status = statusConfig[order.status as keyof typeof statusConfig]
+                    const status = statusConfig[order.status as keyof typeof statusConfig] || statusConfig.PENDING
                     return (
                       <div
                         key={order.id}
@@ -131,6 +169,9 @@ export default function DashboardPage() {
                 <div className="text-center py-8">
                   <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground">ยังไม่มีคำสั่งซื้อ</p>
+                  <Link href="/shop">
+                    <Button variant="neon" className="mt-4">เลือกซื้อสินค้า</Button>
+                  </Link>
                 </div>
               )}
             </Card>
@@ -151,19 +192,22 @@ export default function DashboardPage() {
                       key={license.id}
                       className="p-4 bg-muted/50 rounded-lg"
                     >
-                      <div className="flex items-center justify-between mb-3">
-                        <p className="font-medium text-foreground">{license.productName}</p>
-                        <Badge variant={license.status === 'ACTIVE' ? 'success' : 'secondary'}>
-                          {license.status === 'ACTIVE' ? 'ใช้งานอยู่' : 'หมดอายุ'}
-                        </Badge>
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <p className="font-medium text-foreground">{license.productName}</p>
+                          <p className="text-sm text-muted-foreground font-mono">
+                            {license.key.substring(0, 8)}****
+                          </p>
+                        </div>
+                        <Badge variant="success">ใช้งานอยู่</Badge>
                       </div>
-                      <div className="flex items-center gap-2 p-2 bg-background/50 rounded font-mono text-sm text-muted-foreground mb-3">
-                        <Key className="w-4 h-4 text-primary" />
-                        {license.key}
-                      </div>
-                      <div className="flex justify-between text-sm text-muted-foreground">
-                        <span>ใช้งาน: {license.activations}/{license.maxActivations}</span>
-                        <span>หมดอายุ: {license.expiresAt}</span>
+                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                        <span>
+                          ใช้งาน: {license.activations}/{license.maxActivations}
+                        </span>
+                        {license.expiresAt && (
+                          <span>หมดอายุ: {license.expiresAt}</span>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -172,37 +216,12 @@ export default function DashboardPage() {
                 <div className="text-center py-8">
                   <Key className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground">ยังไม่มีไลเซนส์</p>
+                  <Link href="/shop">
+                    <Button variant="neon" className="mt-4">เลือกซื้อสินค้า</Button>
+                  </Link>
                 </div>
               )}
             </Card>
-          </div>
-
-          {/* Quick Actions */}
-          <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Link href="/shop">
-              <Card variant="glass" className="p-4 card-hover text-center">
-                <ShoppingBag className="w-6 h-6 text-primary mx-auto mb-2" />
-                <p className="text-sm text-foreground">ซื้อสินค้าเพิ่ม</p>
-              </Card>
-            </Link>
-            <Link href="/dashboard/orders">
-              <Card variant="glass" className="p-4 card-hover text-center">
-                <Package className="w-6 h-6 text-primary mx-auto mb-2" />
-                <p className="text-sm text-foreground">ดูคำสั่งซื้อ</p>
-              </Card>
-            </Link>
-            <Link href="/dashboard/licenses">
-              <Card variant="glass" className="p-4 card-hover text-center">
-                <Key className="w-6 h-6 text-primary mx-auto mb-2" />
-                <p className="text-sm text-foreground">จัดการไลเซนส์</p>
-              </Card>
-            </Link>
-            <Link href="/dashboard/settings">
-              <Card variant="glass" className="p-4 card-hover text-center">
-                <Settings className="w-6 h-6 text-primary mx-auto mb-2" />
-                <p className="text-sm text-foreground">ตั้งค่าบัญชี</p>
-              </Card>
-            </Link>
           </div>
         </div>
       </main>

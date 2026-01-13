@@ -43,3 +43,6 @@ next-env.d.ts
 # deployment
 /cpanel_deploy/
 *.zip
+cpanel_upload/
+nul
+ssshop_delivery/

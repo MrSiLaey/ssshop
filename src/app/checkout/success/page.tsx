@@ -3,194 +3,303 @@
 import { useEffect, useState, Suspense } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { Check, Download, Package, ArrowRight, Copy, Key } from 'lucide-react'
-import { Header, Footer } from '@/components/layout'
+import { Check, Download, Package, ArrowRight, Copy, Key, Truck, Clock, Mail } from 'lucide-react'
 import { Button, Card, Badge } from '@/components/ui'
-import { useCartStore } from '@/stores'
 import { formatCurrency } from '@/lib/utils'
+
+interface OrderItem {
+  id: string
+  productName: string
+  price: number
+  quantity: number
+  total: number
+  isDigital: boolean
+  product?: {
+    slug: string
+    thumbnail?: string
+  }
+}
+
+interface License {
+  id: string
+  key: string
+  productId: string
+}
+
+interface Order {
+  id: string
+  orderNumber: string
+  status: string
+  paymentStatus: string
+  subtotal: number
+  discount: number
+  tax: number
+  shippingCost: number
+  total: number
+  shippingAddress?: string
+  customerNote?: string
+  createdAt: string
+  items: OrderItem[]
+  licenseKeys?: License[]
+}
 
 function CheckoutSuccessContent() {
   const searchParams = useSearchParams()
-  const sessionId = searchParams.get('session_id')
-  const [order, setOrder] = useState<any>(null)
+  const orderId = searchParams.get('order_id')
+  const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
-  const { clearCart } = useCartStore()
+  const [error, setError] = useState<string | null>(null)
+  const [copiedKey, setCopiedKey] = useState<string | null>(null)
 
   useEffect(() => {
-    // Clear cart on success
-    clearCart()
+    async function fetchOrder() {
+      if (!orderId) {
+        setError('ไม่พบหมายเลขคำสั่งซื้อ')
+        setLoading(false)
+        return
+      }
 
-    // In real app, fetch order details from API using session_id
-    // For demo, we'll use mock data
-    setOrder({
-      id: 'ORD-2024-001234',
-      items: [
-        {
-          id: '1',
-          name: 'Premium Software License',
-          price: 2990,
-          quantity: 1,
-          isDigital: true,
-          licenseKey: 'SSS-PREM-XXXX-YYYY-ZZZZ',
-          downloadUrl: '#',
-        },
-      ],
-      total: 2990,
-      createdAt: new Date().toISOString(),
-    })
-    setLoading(false)
-  }, [clearCart])
+      try {
+        const res = await fetch(`/api/orders/${orderId}`)
+        if (!res.ok) {
+          throw new Error('ไม่สามารถโหลดข้อมูลคำสั่งซื้อได้')
+        }
+        const data = await res.json()
+        setOrder(data)
+      } catch (err: any) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchOrder()
+  }, [orderId])
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
+    setCopiedKey(text)
+    setTimeout(() => setCopiedKey(null), 2000)
   }
 
   if (loading) {
     return (
-      <>
-        <Header />
-        <main className="min-h-screen pt-16 flex items-center justify-center bg-background">
-          <div className="text-center">
-            <div className="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-            <p className="text-muted-foreground">กำลังโหลดข้อมูลคำสั่งซื้อ...</p>
-          </div>
-        </main>
-        <Footer />
-      </>
+      <div className="min-h-screen pt-24 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-muted-foreground">กำลังโหลดข้อมูลคำสั่งซื้อ...</p>
+        </div>
+      </div>
     )
   }
 
+  if (error || !order) {
+    return (
+      <div className="min-h-screen pt-24 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-20 h-20 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-6">
+            <span className="text-4xl">❌</span>
+          </div>
+          <h1 className="text-2xl font-bold mb-2">เกิดข้อผิดพลาด</h1>
+          <p className="text-muted-foreground mb-6">{error || 'ไม่พบข้อมูลคำสั่งซื้อ'}</p>
+          <Link href="/shop">
+            <Button variant="neon">กลับไปหน้าร้านค้า</Button>
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  const hasDigitalItems = order.items.some(item => item.isDigital)
+  const hasPhysicalItems = order.items.some(item => !item.isDigital)
+
   return (
-    <>
-      <Header />
-      <main className="min-h-screen pt-16 bg-background">
-        <div className="container mx-auto px-4 py-12">
-          <div className="max-w-2xl mx-auto">
-            {/* Success Icon */}
-            <div className="text-center mb-8">
-              <div className="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-6 animate-float">
-                <Check className="w-10 h-10 text-emerald-400" />
+    <div className="min-h-screen pt-24 pb-16">
+      <div className="container mx-auto px-4">
+        <div className="max-w-3xl mx-auto">
+          {/* Success Icon */}
+          <div className="text-center mb-8">
+            <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6 animate-pulse">
+              <Check className="w-10 h-10 text-green-400" />
+            </div>
+            <h1 className="text-3xl font-bold text-foreground mb-2">สั่งซื้อสำเร็จ!</h1>
+            <p className="text-muted-foreground">ขอบคุณสำหรับการสั่งซื้อ</p>
+          </div>
+
+          {/* Order Details */}
+          <Card className="p-6 mb-6 border border-purple-500/20 bg-card/50 backdrop-blur-sm">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <p className="text-sm text-muted-foreground">หมายเลขคำสั่งซื้อ</p>
+                <p className="text-lg font-mono font-bold text-foreground">{order.orderNumber}</p>
               </div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">ชำระเงินสำเร็จ!</h1>
-              <p className="text-muted-foreground">ขอบคุณสำหรับการสั่งซื้อ</p>
+              <Badge className={order.paymentStatus === 'COMPLETED' 
+                ? 'bg-green-500/20 text-green-400 border-green-500/30'
+                : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
+              }>
+                {order.paymentStatus === 'COMPLETED' ? 'ชำระเงินแล้ว' : 'รอชำระเงิน'}
+              </Badge>
             </div>
 
-            {/* Order Details */}
-            <Card variant="glass" className="p-6 mb-6">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <p className="text-sm text-muted-foreground">หมายเลขคำสั่งซื้อ</p>
-                  <p className="text-lg font-mono font-bold text-foreground">{order?.id}</p>
+            {/* Payment Instructions */}
+            {order.paymentStatus !== 'COMPLETED' && (
+              <div className="mb-6 p-4 rounded-lg border border-yellow-500/30 bg-yellow-500/10">
+                <h3 className="font-semibold text-foreground mb-3 flex items-center">
+                  <Clock className="w-5 h-5 mr-2 text-yellow-400" />
+                  รอการชำระเงิน
+                </h3>
+                <div className="text-sm text-muted-foreground space-y-2">
+                  <p>กรุณาโอนเงินจำนวน <span className="font-bold text-purple-400">{formatCurrency(Number(order.total))}</span> ไปยังบัญชี:</p>
+                  <div className="p-3 rounded bg-background/50">
+                    <p><strong>ธนาคาร:</strong> กสิกรไทย</p>
+                    <p><strong>ชื่อบัญชี:</strong> Soft Stop Shop</p>
+                    <p><strong>เลขที่บัญชี:</strong> XXX-X-XXXXX-X</p>
+                  </div>
+                  <p className="text-yellow-400">⚠️ กรุณาโอนเงินภายใน 24 ชั่วโมง</p>
                 </div>
-                <Badge variant="success">ชำระเงินแล้ว</Badge>
               </div>
+            )}
 
-              <div className="border-t border-border pt-6">
-                <h3 className="font-semibold text-foreground mb-4">รายการสินค้า</h3>
-                <div className="space-y-4">
-                  {order?.items.map((item: any) => (
-                    <div key={item.id} className="p-4 bg-muted/50 rounded-lg">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
-                            {item.isDigital ? (
-                              <Download className="w-5 h-5 text-primary" />
-                            ) : (
-                              <Package className="w-5 h-5 text-muted-foreground" />
-                            )}
-                          </div>
-                          <div>
-                            <p className="font-medium text-foreground">{item.name}</p>
-                            <p className="text-sm text-muted-foreground">x{item.quantity}</p>
-                          </div>
+            {/* Order Items */}
+            <div className="border-t border-purple-500/20 pt-6">
+              <h3 className="font-semibold text-foreground mb-4">รายการสินค้า</h3>
+              <div className="space-y-4">
+                {order.items.map((item) => (
+                  <div key={item.id} className="p-4 bg-background/50 rounded-lg">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                          {item.isDigital ? (
+                            <Download className="w-5 h-5 text-purple-400" />
+                          ) : (
+                            <Package className="w-5 h-5 text-muted-foreground" />
+                          )}
                         </div>
-                        <span className="font-semibold text-foreground">
-                          {formatCurrency(item.price)}
-                        </span>
+                        <div>
+                          <p className="font-medium text-foreground">{item.productName}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {formatCurrency(Number(item.price))} x {item.quantity}
+                          </p>
+                        </div>
                       </div>
-
-                      {/* License Key */}
-                      {item.isDigital && item.licenseKey && (
-                        <div className="mt-4 p-3 bg-primary/10 border border-primary/30 rounded-lg">
-                          <div className="flex items-center gap-2 mb-2">
-                            <Key className="w-4 h-4 text-primary" />
-                            <span className="text-sm font-medium text-primary">License Key</span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <code className="text-sm font-mono text-foreground">{item.licenseKey}</code>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => copyToClipboard(item.licenseKey)}
-                            >
-                              <Copy className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Download Button */}
-                      {item.isDigital && item.downloadUrl && (
-                        <Button variant="outline" className="w-full mt-3">
-                          <Download className="w-4 h-4 mr-2" />
-                          ดาวน์โหลดไฟล์
-                        </Button>
-                      )}
+                      <span className="font-semibold text-purple-400">
+                        {formatCurrency(Number(item.total))}
+                      </span>
                     </div>
-                  ))}
-                </div>
+
+                    {/* License Key for Digital Products */}
+                    {item.isDigital && order.licenseKeys?.find(l => l.productId === item.id) && (
+                      <div className="mt-3 p-3 rounded bg-purple-500/10 border border-purple-500/30">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Key className="w-4 h-4 text-purple-400" />
+                            <span className="text-sm text-muted-foreground">License Key:</span>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => copyToClipboard(order.licenseKeys?.find(l => l.productId === item.id)?.key || '')}
+                            className="text-purple-400 hover:text-purple-300"
+                          >
+                            {copiedKey === order.licenseKeys?.find(l => l.productId === item.id)?.key ? (
+                              <>
+                                <Check className="w-4 h-4 mr-1" />
+                                คัดลอกแล้ว
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-4 h-4 mr-1" />
+                                คัดลอก
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                        <p className="font-mono text-sm text-purple-400 mt-1 break-all">
+                          {order.licenseKeys?.find(l => l.productId === item.id)?.key}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
-
-              <div className="border-t border-border pt-4 mt-6">
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">ยอดรวมทั้งหมด</span>
-                  <span className="text-xl font-bold text-foreground">
-                    {formatCurrency(order?.total)}
-                  </span>
-                </div>
-              </div>
-            </Card>
-
-            {/* Info Notice */}
-            <Card variant="luxury" className="p-4 mb-8">
-              <p className="text-sm text-muted-foreground">
-                📧 รายละเอียดคำสั่งซื้อและไลเซนส์ได้ถูกส่งไปยังอีเมลของคุณแล้ว 
-                หากไม่พบอีเมล กรุณาตรวจสอบในโฟลเดอร์ Spam
-              </p>
-            </Card>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/dashboard/orders" className="flex-1">
-                <Button variant="outline" className="w-full">
-                  ดูคำสั่งซื้อของฉัน
-                </Button>
-              </Link>
-              <Link href="/shop" className="flex-1">
-                <Button className="w-full">
-                  ซื้อสินค้าต่อ
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </Link>
             </div>
+
+            {/* Order Summary */}
+            <div className="border-t border-purple-500/20 mt-6 pt-6">
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between text-muted-foreground">
+                  <span>รวมสินค้า</span>
+                  <span>{formatCurrency(Number(order.subtotal))}</span>
+                </div>
+                {Number(order.discount) > 0 && (
+                  <div className="flex justify-between text-green-400">
+                    <span>ส่วนลด</span>
+                    <span>-{formatCurrency(Number(order.discount))}</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-muted-foreground">
+                  <span>ค่าจัดส่ง</span>
+                  <span>{Number(order.shippingCost) > 0 ? formatCurrency(Number(order.shippingCost)) : 'ฟรี'}</span>
+                </div>
+              </div>
+              <div className="flex justify-between mt-4 pt-4 border-t border-purple-500/20">
+                <span className="font-semibold text-foreground">ยอดรวมทั้งหมด</span>
+                <span className="text-xl font-bold text-purple-400">{formatCurrency(Number(order.total))}</span>
+              </div>
+            </div>
+
+            {/* Shipping Address */}
+            {hasPhysicalItems && order.shippingAddress && (
+              <div className="border-t border-purple-500/20 mt-6 pt-6">
+                <h3 className="font-semibold text-foreground mb-3 flex items-center">
+                  <Truck className="w-5 h-5 mr-2 text-purple-400" />
+                  ที่อยู่จัดส่ง
+                </h3>
+                <p className="text-muted-foreground">{order.shippingAddress}</p>
+              </div>
+            )}
+          </Card>
+
+          {/* Email Notice */}
+          <Card className="p-4 mb-6 border border-cyan-500/30 bg-cyan-500/10">
+            <div className="flex items-start gap-3">
+              <Mail className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-medium text-foreground">ตรวจสอบอีเมลของคุณ</p>
+                <p className="text-sm text-muted-foreground">
+                  เราได้ส่งรายละเอียดคำสั่งซื้อไปยังอีเมลของคุณแล้ว
+                  {hasDigitalItems && ' รวมถึง License Key และลิงก์ดาวน์โหลดสำหรับสินค้าดิจิทัล'}
+                </p>
+              </div>
+            </div>
+          </Card>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/dashboard/orders">
+              <Button variant="outline" className="w-full sm:w-auto border-purple-500/30">
+                ดูประวัติคำสั่งซื้อ
+              </Button>
+            </Link>
+            <Link href="/shop">
+              <Button variant="neon" className="w-full sm:w-auto">
+                เลือกซื้อสินค้าต่อ
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </Link>
           </div>
         </div>
-      </main>
-      <Footer />
-    </>
+      </div>
+    </div>
   )
 }
 
 export default function CheckoutSuccessPage() {
   return (
     <Suspense fallback={
-      <>
-        <Header />
-        <main className="min-h-screen py-16 flex items-center justify-center bg-background">
-          <div className="animate-spin h-8 w-8 border-2 border-primary rounded-full border-t-transparent" />
-        </main>
-        <Footer />
-      </>
+      <div className="min-h-screen pt-24 flex items-center justify-center">
+        <div className="animate-spin w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full"></div>
+      </div>
     }>
       <CheckoutSuccessContent />
     </Suspense>

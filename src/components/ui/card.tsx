@@ -4,18 +4,22 @@ import * as React from 'react'
 import { cn } from '@/lib/utils'
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: 'default' | 'glass' | 'neon' | 'gradient' | 'gold' | 'luxury'
+  variant?: 'default' | 'glass' | 'neon' | 'neon-cyan' | 'neon-pink' | 'neon-green' | 'neon-orange' | 'gradient' | 'gold' | 'luxury'
 }
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ className, variant = 'default', ...props }, ref) => {
     const variants = {
       default: 'bg-card border-border',
-      glass: 'bg-card/60 backdrop-blur-xl border-primary/10',
-      neon: 'bg-card border-primary/30 shadow-lg shadow-primary/10',
-      gradient: 'bg-gradient-to-br from-card via-muted to-card border-border',
-      gold: 'bg-gradient-to-br from-card via-card to-primary/10 border-primary/20 shadow-lg shadow-primary/5',
-      luxury: 'bg-gradient-to-br from-card via-background to-muted border-primary/20 shadow-xl shadow-primary/5 backdrop-blur-xl',
+      glass: 'bg-card/40 backdrop-blur-xl border-white/10 dark:border-white/5',
+      neon: 'bg-card/50 backdrop-blur-xl border-purple-500/30 hover:border-purple-500/50 shadow-lg shadow-purple-500/5 hover:shadow-purple-500/20',
+      'neon-cyan': 'bg-card/50 backdrop-blur-xl border-cyan-500/30 hover:border-cyan-500/50 shadow-lg shadow-cyan-500/5 hover:shadow-cyan-500/20',
+      'neon-pink': 'bg-card/50 backdrop-blur-xl border-pink-500/30 hover:border-pink-500/50 shadow-lg shadow-pink-500/5 hover:shadow-pink-500/20',
+      'neon-green': 'bg-card/50 backdrop-blur-xl border-green-500/30 hover:border-green-500/50 shadow-lg shadow-green-500/5 hover:shadow-green-500/20',
+      'neon-orange': 'bg-card/50 backdrop-blur-xl border-orange-500/30 hover:border-orange-500/50 shadow-lg shadow-orange-500/5 hover:shadow-orange-500/20',
+      gradient: 'bg-linear-to-br from-card via-muted to-card border-border',
+      gold: 'bg-linear-to-br from-card via-card to-amber-500/10 border-amber-500/20 shadow-lg shadow-amber-500/5',
+      luxury: 'bg-linear-to-br from-card via-background to-muted border-purple-500/20 shadow-xl shadow-purple-500/5 backdrop-blur-xl',
     }
 
     return (
