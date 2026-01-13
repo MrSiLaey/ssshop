@@ -3,6 +3,19 @@ import { Inter, Orbitron } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
 
+function resolveMetadataBase(): URL {
+  const fromEnv =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.NEXTAUTH_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined)
+
+  const raw = fromEnv || 'http://localhost:3000'
+  const withProtocol = raw.startsWith('http://') || raw.startsWith('https://') ? raw : `https://${raw}`
+  return new URL(withProtocol)
+}
+
+const metadataBase = resolveMetadataBase()
+
 const inter = Inter({ 
   subsets: ['latin'],
   variable: '--font-inter',
@@ -14,6 +27,7 @@ const orbitron = Orbitron({
 })
 
 export const metadata: Metadata = {
+  metadataBase,
   title: {
     default: 'Soft Stop Shop - ร้านค้าออนไลน์แบบครบวงจร',
     template: '%s | Soft Stop Shop',
@@ -27,19 +41,30 @@ export const metadata: Metadata = {
     shortcut: '/images/logo.png',
     apple: '/images/logo.png',
   },
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     type: 'website',
     locale: 'th_TH',
-    url: 'https://softstopshop.com',
+    url: metadataBase,
     title: 'Soft Stop Shop - ร้านค้าออนไลน์แบบครบวงจร',
     description: 'ร้านค้าออนไลน์แบบครบวงจร ทั้งสินค้าจัดส่งจริงและสินค้าดิจิทัลพร้อมระบบไลเซนส์',
     siteName: 'Soft Stop Shop',
-    images: ['/images/logo.png'],
+    images: [
+      {
+        url: '/images/logo.png',
+        width: 512,
+        height: 512,
+        alt: 'Soft Stop Shop',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Soft Stop Shop - ร้านค้าออนไลน์แบบครบวงจร',
     description: 'ร้านค้าออนไลน์แบบครบวงจร ทั้งสินค้าจัดส่งจริงและสินค้าดิจิทัลพร้อมระบบไลเซนส์',
+    images: ['/images/logo.png'],
   },
   robots: {
     index: true,
